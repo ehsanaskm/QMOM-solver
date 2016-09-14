@@ -94,6 +94,19 @@ class qmom
                        dimensionedScalar ResidualAlphaForAdjust_;
                        dimensionedScalar ResidualAlphaForCorrect_;
 
+      dimensionedScalar m0_;
+      dimensionedScalar m1_;
+      dimensionedScalar m2_;
+      dimensionedScalar m3_;
+      dimensionedScalar m4_;
+      dimensionedScalar m5_;
+      dimensionedScalar w1_;
+      dimensionedScalar w2_;
+      dimensionedScalar w3_;
+      dimensionedScalar L1_;
+      dimensionedScalar L2_;
+      dimensionedScalar L3_;
+
 			//- number of classes  (is a label not scalar!!)
 //			label Nc_;
 
@@ -144,18 +157,18 @@ class qmom
 			scalar loopTolerance_;
 
             //           PtrList<volScalarField> f;
-                volScalarField m0;
+            /*    volScalarField m0;
                 volScalarField m1;
                 volScalarField m2;
                 volScalarField m3;
                 volScalarField m4;
                 volScalarField m5;
-                volScalarField w0;
                 volScalarField w1;
                 volScalarField w2;
-                volScalarField L0;
+                volScalarField w3;
                 volScalarField L1;
                 volScalarField L2;
+                volScalarField L3;*/
 
 
 

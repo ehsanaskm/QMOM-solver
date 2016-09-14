@@ -107,11 +107,24 @@
 	     mesh
 	 );
 
-	 volScalarField m_ini
+   volScalarField m_ini
+   (
+       IOobject
+       (
+         "m_ini",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+      ),
+       mesh
+   );
+
+	 volScalarField f_ini
 	 (
 	     IOobject
 	     (
-			   "m_ini",
+           "f_ini",
 				runTime.timeName(),
 				mesh,
 				IOobject::MUST_READ,
@@ -160,7 +173,7 @@
 	 populationBalanceModel PBM
 	 (
 		  source, 					// source term
-//		  f,							// VF of each class i
+  //		  f,							// VF of each class i
         m,
 		  alpha1						// total volume fraction of dispersed phase
 	 );

@@ -102,6 +102,7 @@ qmom::qmom
 	),
 
   /////////////////////////////////////////////////////////////////
+/*
   	m0
   	(
   		IOobject
@@ -175,19 +176,7 @@ qmom::qmom
   		),
   		alpha_.mesh()
   	),
-    w0
-  	(
-  		IOobject
-  		(
-  			"w0",
-  			alpha_.time().timeName(),
-  			alpha_.db(),
-  			IOobject::MUST_READ,
-  			IOobject::AUTO_WRITE
-  		),
-  		alpha_.mesh()
-  	),
-  	w1
+    w1
   	(
   		IOobject
   		(
@@ -211,11 +200,11 @@ qmom::qmom
   		),
   		alpha_.mesh()
   	),
-    L0
+  	w3
   	(
   		IOobject
   		(
-  			"L0",
+  			"w3",
   			alpha_.time().timeName(),
   			alpha_.db(),
   			IOobject::MUST_READ,
@@ -223,7 +212,7 @@ qmom::qmom
   		),
   		alpha_.mesh()
   	),
-  	L1
+    L1
   	(
   		IOobject
   		(
@@ -247,11 +236,34 @@ qmom::qmom
   		),
   		alpha_.mesh()
   	),
+  	L3
+  	(
+  		IOobject
+  		(
+  			"L3",
+  			alpha_.time().timeName(),
+  			alpha_.db(),
+  			IOobject::MUST_READ,
+  			IOobject::AUTO_WRITE
+  		),
+  		alpha_.mesh()
+  	),*/
 
 	ResidualAlphaForDsauter_(dict_.lookup("ResidualAlphaForDsauter")),
   ResidualAlphaForAdjust_(dict_.lookup("ResidualAlphaForAdjust")),
   ResidualAlphaForCorrect_(dict_.lookup("ResidualAlphaForCorrect")),
-  dm_(dict_.lookup("dm")),
+  m0_(dict_.lookup("m0")),
+  m1_(dict_.lookup("m1")),
+  m2_(dict_.lookup("m2")),
+  m3_(dict_.lookup("m3")),
+  m4_(dict_.lookup("m4")),
+  m5_(dict_.lookup("m5")),
+  w1_(dict_.lookup("w1")),
+  w2_(dict_.lookup("w2")),
+  w3_(dict_.lookup("w3")),
+  L1_(dict_.lookup("L1")),
+  L2_(dict_.lookup("L2")),
+  L3_(dict_.lookup("L3")),
 	Nm_(readLabel(dict_.lookup("Nm"))),
   nodes_(readLabel(dict_.lookup("nodes"))),
 	h0_(dict_.lookup("h0")),
@@ -472,10 +484,8 @@ const
 void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>& L, PtrList<volScalarField>& m, const volScalarField alpha) const
 {
   label N=lrint(nodes_);
-  scalar norm_position[N*N];
   scalar matriceP[N*N][N*N],ai[N*N],bi[N*N];
   scalar d[N*N],a[N*N][N*N],v[N*N][N*N],alphaii[N*N];
-
 
   forAll(alpha, II)
   {
@@ -485,17 +495,12 @@ void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>&
       if(i==1) {matriceP[i][1]=1.0;}
       else     {matriceP[i][1]=0.0;}
     }
-  //  m[0][II] = 1.0 ;  // forced to be unit
-      for(label i=1; i<2*N+1; i++)
-    {
-     norm_position[i-1] = m[i-1][II]/max(m[0][II], 1e-10);
-    }
+    m[0][II] = 1.0 ;  // forced to be unit
 
     // second column
-    for(label i=1; i<=2*N+1; i++)
+    for(label i=1; i<=2*N; i++)
     {
-      //   matriceP[i][2] = pow(-1,i-1.0)*mag(m[i-1][II]);
-         matriceP[i][2] = pow(-1,i-1.0)*norm_position[i-1];
+         matriceP[i][2] = pow(-1,i-1)*mag(m[i-1][II]);
     }
 
     //rest of the column
@@ -523,7 +528,7 @@ void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>&
 
     for(label i=1; i<= N-1; i++)
     {
-		bi[i] = Foam::sqrt(mag(alphaii[2*i+1]*alphaii[2*i])); // positive root
+		bi[i] = ::sqrt(mag(alphaii[2*i+1]*alphaii[2*i])); // positive root
     }
 
 	//- eigenValues and eigenVector for the Jacobi matrice
@@ -567,20 +572,20 @@ void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>&
 	d[3] = e_values.z();
 
 	//- final allocation
-	for(int i=0; i<=N-1; i++)
+	for(int i=1; i<=N; i++)
 	{
       // weights are the first component of eigenVectors
-      w[i][II] = mag(m[0][II]*sqr(v[1][i+1]));
+      w[i][II] = mag(m[0][II]*sqr(v[1][i]));
       if(w[i][II] <= 0 || w[i][II] > 1) w[i][II]=alpha[II];
 
       // abscissas are the eigenValues
-      L[i][II] = mag(d[i+1]);
+      L[i][II] = mag(d[i]);
 
       // limitation to 10 mm of diameter
-//      if(L[i][II] > 0.01)
-	//  {
-		//L[i][II] = 0.01;
-	  //}
+      if(L[i][II] > 0.01)
+	  {
+		L[i][II] = 0.01;
+	  }
 	} // end loop i
   } // end loop forALL
 
@@ -692,7 +697,7 @@ void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const v
    }
 
 
-	for(int i=0; i<=nodes_-1; i++)
+	for(int i=1; i<=nodes_; i++)
    {
       forAll(L[i], I)
 		{
@@ -706,7 +711,7 @@ void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const v
             }
             else
             {
-                 L[I] = dMin_.value();
+                 L[i][I] = dMin_.value();
             }
 ///////////////////////////////////////////////////////////////
 
@@ -724,9 +729,9 @@ void qmom::correct()
   const fvMesh& mesh = alpha_.mesh();
 
  PtrList<volScalarField> source(Nm_);
- PtrList<volScalarField> m(Nm_);
- PtrList<volScalarField> w(nodes_);
- PtrList<volScalarField> L(nodes_);
+ PtrList<volScalarField> m(2*Nm_);
+ PtrList<volScalarField> w(2*nodes_);
+ PtrList<volScalarField> L(2*nodes_);
 
 
   volScalarField source_ini =
@@ -781,10 +786,9 @@ void qmom::correct()
 	      )
 	    );
 
-
 	 }
 
-   for(label j=0;j<=nodes_-1;j++)
+   for(label j=0;j<=nodes_;j++)
  	 {
  		 word wName = "w_" + Foam::name(j);
  		 word LName = "L_" + Foam::name(j);
@@ -800,7 +804,7 @@ void qmom::correct()
  					 mesh.time().timeName(),
  					 mesh,
  					 IOobject::NO_READ,
- 				         IOobject::AUTO_WRITE
+ 				  IOobject::AUTO_WRITE
  			   ),
  	         w_ini
  	      )
@@ -816,15 +820,14 @@ void qmom::correct()
  					 mesh.time().timeName(),
  					 mesh,
  					 IOobject::NO_READ,
- 				         IOobject::AUTO_WRITE
+ 				   IOobject::AUTO_WRITE
  			   ),
                  L_ini
  	      )
  	    );
 
-
  	 }
-
+/*
    m.set
  ( 0,
     volScalarField
@@ -922,22 +925,6 @@ m.set
  )
 );
 L.set
-( 0,
- volScalarField
- (
-    IOobject
-    (
-     "L0",
-
-                alpha_.time().timeName(),
-                alpha_.db(),
-    IOobject::NO_READ,
-          IOobject::NO_WRITE
-  ),
-         L0
- )
-);
-L.set
 ( 1,
  volScalarField
  (
@@ -969,20 +956,20 @@ L.set
          L2
  )
 );
-w.set
-( 0,
+L.set
+( 3,
  volScalarField
  (
     IOobject
     (
-     "w0",
+     "L3",
 
                 alpha_.time().timeName(),
                 alpha_.db(),
     IOobject::NO_READ,
           IOobject::NO_WRITE
   ),
-         w0
+         L3
  )
 );
 w.set
@@ -1017,10 +1004,29 @@ w.set
          w2
  )
 );
+w.set
+( 3,
+ volScalarField
+ (
+    IOobject
+    (
+     "w3",
 
-m[0]=m0;m[1]=m1;m[2]=m2;m[3]=m3;m[4]=m4;m[5]=m5;
-w[0]=w0;w[1]=w1;w[2]=w2;
-L[0]=L0;L[1]=L1;L[2]=L2;
+                alpha_.time().timeName(),
+                alpha_.db(),
+    IOobject::NO_READ,
+          IOobject::NO_WRITE
+  ),
+         w3
+ )
+);*/
+
+//m[0]=m0;m[1]=m1;m[2]=m2;m[3]=m3;m[4]=m4;m[5]=m5;
+m[0]=m0_.value();m[1]=m1_.value();m[2]=m2_.value();m[3]=m3_.value();m[4]=m4_.value();m[5]=m5_.value();
+//w[1]=w1;w[2]=w2;w[3]=w3;
+//L[1]=L1;L[2]=L2;L[3]=L3;
+w[1]=w1_.value();w[2]=w2_.value();w[3]=w3_.value();
+L[1]=L1_.value();L[2]=L2_.value();L[3]=L3_.value();
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1035,7 +1041,6 @@ L[0]=L0;L[1]=L1;L[2]=L2;
 
   surfaceScalarField phia =
     mesh.objectRegistry::lookupObject<surfaceScalarField>("phi.air");
-
 
 
 
@@ -1058,6 +1063,8 @@ L[0]=L0;L[1]=L1;L[2]=L2;
 	//		if(i != (Nm_-1)/2)
 
 		//	{
+
+
      word fScheme("div(phia,mi)");
 
 
@@ -1083,20 +1090,32 @@ m[2]=mag(m[2]);
 m[3]=mag(m[3]);
 m[4]=mag(m[4]);
 m[5]=mag(m[5]);
+Info << "m0" << average(m[0]) << endl;
+Info << "m1" << average(m[1]) << endl;
+Info << "m2" << average(m[2]) << endl;
+Info << "m3" << average(m[3]) << endl;
+Info << "m4" << average(m[4]) << endl;
+Info << "m5" << average(m[5]) << endl;
 
     qmom::weightsAbscissas(w,L,m,alpha);
-  Info << "banana" << "\t" << endl; //moshkel injast
+
+    m[0]=mag(m[0]);
+    m[1]=mag(m[1]);
+    m[2]=mag(m[2]);
+    m[3]=mag(m[3]);
+    m[4]=mag(m[4]);
+    m[5]=mag(m[5]);
+
 
 		qmom::adjust(source,L,alpha);
 
+    w[1]=mag(w[1])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
+    w[2]=mag(w[2])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
+    w[3]=mag(w[3])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
 
-    w[0]=mag(w[0])/(mag(w[0])+mag(w[1])+mag(w[2])+SMALL);
-    w[1]=mag(w[1])/(mag(w[0])+mag(w[1])+mag(w[2])+SMALL);
-    w[2]=mag(w[2])/(mag(w[0])+mag(w[1])+mag(w[2])+SMALL);
-
-    L[0]=0.012*mag(L[0])/(mag(L[0])+mag(L[1])+mag(L[2])+SMALL);
-    L[1]=0.012*mag(L[1])/(mag(L[0])+mag(L[1])+mag(L[2])+SMALL);
-    L[2]=0.012*mag(L[2])/(mag(L[0])+mag(L[1])+mag(L[2])+SMALL);
+    L[1]=0.012*mag(L[1])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
+    L[2]=0.012*mag(L[2])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
+    L[3]=0.012*mag(L[3])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
 
 
 /*
@@ -1162,9 +1181,9 @@ m[5]=mag(m[5]);
         d32_.relax();
         d32_.correctBoundaryConditions();
 
-m0=m[0];m1=m[1];m2=m[2];m3=m[3];m4=m[4];m5=m[5];
-w0=w[0];w1=w[1];w2=w[2];
-L0=L[0];L1=L[1];L2=L[2];
+//m0=m[0];m1=m[1];m2=m[2];m3=m[3];m4=m[4];m5=m[5];
+//w1=w[1];w2=w[2];w3=w[3];
+//L1=L[1];L2=L[2];L3=L[3];
 
 
 }

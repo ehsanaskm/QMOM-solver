@@ -48,17 +48,18 @@ air
         );
     }
 */
-/*
+
 
     diameterModel constant;
     constantCoeffs
     {
         d               5e-3;
     }
+
+/*    diameterModel   PBMmethod;
+   PBMmethodCoeffs
+    {}
 */
-    diameterModel   PBMmethod;
-
-
 }
 
 water
