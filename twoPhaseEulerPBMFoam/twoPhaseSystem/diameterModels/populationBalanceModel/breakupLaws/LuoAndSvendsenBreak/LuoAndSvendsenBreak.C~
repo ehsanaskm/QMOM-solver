@@ -140,7 +140,7 @@ Foam::dimensionedScalar Foam::LuoAndSvendsenBreak::breakupRate(volScalarField& v
 				  );
   }
 
-  
+Info << "banana" << endl;    
   return result ;
 }
 

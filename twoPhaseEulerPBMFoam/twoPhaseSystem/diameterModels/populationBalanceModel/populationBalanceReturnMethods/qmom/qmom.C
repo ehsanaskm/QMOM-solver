@@ -266,6 +266,7 @@ qmom::qmom
   L3_(dict_.lookup("L3")),
 	Nm_(readLabel(dict_.lookup("Nm"))),
   nodes_(readLabel(dict_.lookup("nodes"))),
+  dm_(dict_.lookup("dm")),
 	h0_(dict_.lookup("h0")),
 	hf_(dict_.lookup("hf")),
 	beta1_(dict_.lookup("beta1")),
@@ -312,42 +313,128 @@ scalar  qmom::kronecker(label& i, label& j) const
 
   else return 0.0;
 }
-/*
-void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& f, const volScalarField& alpha) const
-{
-	scalar d_i, x_i, d_i1, x_i1;
-   scalar  d_j, x_j, d_i_1, x_i_1;
-   scalar *diam = new scalar[Nm_+ 1];
-   scalar fbv25 = 0.25, fbv50 = 0.50, fbv75 = 0.75;
-  diam[0] = dm_.value()/10.0;
 
-   for(int II=1;II<=Nm_;II++)
+void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w, const volScalarField& alpha) const
+{
+  const fvMesh& mesh = alpha_.mesh();
+  PtrList<volScalarField> preS(Nm_);
+	scalar d_i;//, x_i, d_i1, x_i1;
+  scalar d_j;//, x_j, d_i_1, x_i_1;
+//   scalar d_i,x_i;
+volScalarField source_ini =
+  mesh.objectRegistry::lookupObject<volScalarField>("source_ini");
+
+//   scalar *diam = new scalar[Nm_+ 1];
+     scalar *diam = new scalar[Nm_+ 1];
+//   scalar fbv25 = 0.25, fbv50 = 0.50, fbv75 = 0.75;
+//   diam[0] = dm_.value()/10.0;
+
+/*   for(int II=1;II<=Nm_;II++)
     {
       diam[II]= Foam::pow(S_.value(), scalar(II-Nm_/2)/3)*dm_.value();
     }
+*/
 
-   volScalarField vf = 1.-alpha;
+for(label j=0;j<=Nm_-1;j++)
+ {
+   word preSName = "preS_" + Foam::name(j);
 
-	for (int i = 1; i<= Nm_-1; i++)
+   preS.set
+   ( j,
+      volScalarField
+      (
+         IOobject
+         (
+          preSName,
+         mesh.time().timeName(),
+         mesh,
+         IOobject::NO_READ,
+               IOobject::NO_WRITE
+       ),
+         source_ini
+      )
+    );
+}
+    diam[0] = Foam::pow(4, -1./3.)*dm_.value();
+    diam[1] =                  dm_.value();
+    diam[2] = Foam::pow(4,  1./3.)*dm_.value();
+
+
+//       diam[0] = L[1];
+//       diam[1] = L[2];
+//       diam[2] = L[3];
+
+
+      volScalarField vf = 1.-alpha;
+//     volScalarField vf = alpha;
+
+	for (int i = 0; i<= nodes_-1; i++)
 	{
-			d_i = diam[i];
-			d_i_1 = diam[i-1];
-			x_i =  M_PI*pow(d_i, 3.0)/6.0;
-			x_i_1 =  M_PI*pow(d_i_1, 3.0)/6.0;
 
-			for(int j = i+1 ; j <= Nm_ ; j++)
-			{
-				d_j = diam[j];
-				x_j =  M_PI*pow(d_j, 3.0)/6.0;
 
-				S[i] +=   populationBalanceModel_.rhoa().value()
-									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)
-                           * f[j]*f[j]*(x_i-x_i_1)*sqr(alpha)
-                           * x_i/(x_j+SMALL)/(x_j+SMALL)/2.;
-			}
+  			d_i = diam[i];
+//        d_i = diam[i+1];
+//			d_i_1 = diam[i-1];
+//			x_i =  M_PI*pow(d_i, 3.0)/6.0;
+//			x_i_1 =  M_PI*pow(d_i_1, 3.0)/6.0;
+
+  			for(int j = i+1 ; j <= nodes_-1 ; j++)
+   			{
+  				d_j = diam[j];
+
+//				x_j =  M_PI*pow(d_j, 3.0)/6.0;
+
+        		   	//	S[i] +=   populationBalanceModel_.rhoa().value()
+                  preS[i]  =   populationBalanceModel_.rhoa().value()
+        									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1];
+                        //   * f[j]*f[j]*(x_i-x_i_1)*sqr(alpha)
+                        //   * x_i/(x_j+SMALL)/(x_j+SMALL)/2.;
+                        //   * w[i+1]*Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
+
+  			}
+
 	}
 
-	for (int i = 0; i<= Nm_-1; i++)
+  /////////////////////////////////////////////////////////////
+  for(int k = 0; k <= Nm_-1; k++)
+  {
+    for (int i = 0; i<= nodes_-1; i++)
+    {
+Info<<"banana"<<endl;
+      S[k] -= preS[i]*Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
+
+    }
+
+  }
+
+/*
+
+      for (int k = 0; k<= Nm_; k++)
+      {
+      	for (int i = 0; i<= nodes_-1; i++)
+      	{
+      //			d_i = diam[i];
+              d_i = diam[i+1];
+      //			d_i_1 = diam[i-1];
+      //			x_i =  M_PI*pow(d_i, 3.0)/6.0;
+      //			x_i_1 =  M_PI*pow(d_i_1, 3.0)/6.0;
+
+        			for(int j = i+1 ; j <= nodes_-1 ; j++)
+         			{
+        				d_j = diam[j+1];
+      //				x_j =  M_PI*pow(d_j, 3.0)/6.0;
+
+      				S[k] -=   populationBalanceModel_.rhoa().value()
+      									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)
+                              //   * f[j]*f[j]*(x_i-x_i_1)*sqr(alpha)
+                              //   * x_i/(x_j+SMALL)/(x_j+SMALL)/2.;
+                               * w[i]*Foam::pow(diam[i],  k);
+
+        			}
+      	}
+      }
+*/
+/*	for (int i = 0; i<= Nm_-1; i++)
 	{
 			d_i = diam[i];
 			d_i1 = diam[i+1];
@@ -364,7 +451,8 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& f,
                               * x_i/(x_j+SMALL)/(x_j+SMALL)/2.;
 	      }
 	}
-
+*/
+/*
 	for (int i = 1; i<= Nm_; i++)
 	{
 			d_i = diam[i];
@@ -378,10 +466,10 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& f,
                  * f[i]*f[i]*sqr(alpha)
                  * x_i*x_i/(x_i+SMALL)/(x_i+SMALL)/4.;
 	}
-
+*/
 	return;
 }
-
+/*
 void qmom::coalescenceKernel
 (
 	PtrList<volScalarField>& S,
@@ -479,8 +567,8 @@ const
 
 	return ;
 }
-*/
 
+*/
 void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>& L, PtrList<volScalarField>& m, const volScalarField alpha) const
 {
   label N=lrint(nodes_);
@@ -1054,9 +1142,10 @@ L[1]=L1_.value();L[2]=L2_.value();L[3]=L3_.value();
 			// update bubbles breakage/coalescence
 
 	//		qmom::coalescenceKernel(source,f,alpha,epsilon);
-	//		qmom::breakupKernel(source,f,alpha) ;
-	//		volScalarField Sb = source[i]/
-			                        //   populationBalanceModel_.breakupModel().rhoa();
+	   		qmom::breakupKernel(source,w,alpha);
+
+	  //		volScalarField Sb = source[i]/
+			//                            populationBalanceModel_.breakupModel().rhoa();
 
 
 

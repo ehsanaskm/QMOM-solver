@@ -226,13 +226,13 @@ public:
 		  scalar kronecker(label&, label&) const;
 
 		  //------------------------------ bubbles breakup kernel -----------------------//
-/*		  virtual void breakupKernel
+		  virtual void breakupKernel
 		  (
 				PtrList<volScalarField>&,
 				PtrList<volScalarField>&,
 				const volScalarField&
 		  ) const;
-
+/*
 		  //------------------------------ bubbles coalescence kernel -------------------//
 		  virtual void coalescenceKernel
 		  (
