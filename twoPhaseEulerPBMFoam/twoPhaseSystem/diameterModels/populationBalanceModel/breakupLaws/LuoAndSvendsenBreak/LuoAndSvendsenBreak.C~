@@ -84,11 +84,11 @@ Foam::dimensionedScalar Foam::LuoAndSvendsenBreak::rhob() const
 Foam::dimensionedScalar Foam::LuoAndSvendsenBreak::breakupRate(volScalarField& vf, scalar& d1, scalar& d2) const
 
 {
-  const volScalarField& epsilon = 
- 			mesh().objectRegistry::lookupObject<volScalarField>("epsilon"); 
+  //const volScalarField& epsilon = 
+ //			mesh().objectRegistry::lookupObject<volScalarField>("epsilon"); 
 
- // const volScalarField& epsilon = 
-//			mesh().objectRegistry::lookupObject<volScalarField>("epsilon.water");   			
+ const volScalarField& epsilon = 
+			mesh().objectRegistry::lookupObject<volScalarField>("epsilon.water");   			
 	
   dimensionedScalar result("SMALL",dimMass/pow3(dimLength)/dimTime, SMALL); //Rate
  scalar fbv = 
@@ -140,17 +140,17 @@ Foam::dimensionedScalar Foam::LuoAndSvendsenBreak::breakupRate(volScalarField& v
 				  );
   }
 
-Info << "banana" << endl;    
+  
   return result ;
 }
-
+/*
 Foam::dimensionedScalar Foam::LuoAndSvendsenBreak::breakupFrequency(volScalarField& vf, scalar& d, scalar& fbv) const
 {
-  const volScalarField& epsilon = 
-			mesh().objectRegistry::lookupObject<volScalarField>("epsilon");  
-
  // const volScalarField& epsilon = 
-//			mesh().objectRegistry::lookupObject<volScalarField>("epsilon.water");			
+//			mesh().objectRegistry::lookupObject<volScalarField>("epsilon");  
+
+  const volScalarField& epsilon = 
+			mesh().objectRegistry::lookupObject<volScalarField>("epsilon.water");			
   dimensionedScalar result("SMALL",pow(dimTime,-1), SMALL); //Frequency
   
   scalar Cf = pow(fbv, 2./3.) + pow((1.-fbv),2./3.) - 1.;
@@ -200,5 +200,5 @@ Foam::dimensionedScalar Foam::LuoAndSvendsenBreak::breakupFrequency(volScalarFie
   return result ;
  
 }
-
+*/
 // ************************************************************************* //

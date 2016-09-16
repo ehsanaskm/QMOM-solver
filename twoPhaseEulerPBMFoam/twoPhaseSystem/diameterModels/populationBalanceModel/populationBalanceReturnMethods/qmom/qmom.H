@@ -157,7 +157,7 @@ class qmom
 			scalar loopTolerance_;
 
             //           PtrList<volScalarField> f;
-            /*    volScalarField m0;
+                volScalarField m0;
                 volScalarField m1;
                 volScalarField m2;
                 volScalarField m3;
@@ -168,7 +168,7 @@ class qmom
                 volScalarField w3;
                 volScalarField L1;
                 volScalarField L2;
-                volScalarField L3;*/
+                volScalarField L3;
 
 
 
@@ -232,7 +232,7 @@ public:
 				PtrList<volScalarField>&,
 				const volScalarField&
 		  ) const;
-/*
+
 		  //------------------------------ bubbles coalescence kernel -------------------//
 		  virtual void coalescenceKernel
 		  (
@@ -241,7 +241,7 @@ public:
 				const volScalarField&,
 				const volScalarField&
 		  ) const;
-*/
+
 
         //------------------------------ PD algorithm -------------------//
         virtual void weightsAbscissas

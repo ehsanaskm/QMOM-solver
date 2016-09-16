@@ -19,11 +19,11 @@ application     populationFoam;
 
 startFrom       startTime;
 
-startTime       0;
+startTime       15;
 
 stopAt          endTime;
 
-endTime         328;
+endTime         60;
 
 deltaT          0.005;
 
@@ -80,7 +80,12 @@ functions
                  prime2Mean  off;
                  base        time;
             }
-
+            dsauter
+            {
+                 mean        on;
+                 prime2Mean  off;
+                 base        time;
+            }
             p
             {
                  mean        on;

@@ -73,11 +73,11 @@ Foam::tmp<Foam::volScalarField> Foam::diameterModels::PBMmethod::d() const
         "dsauter"
     );
 
-      return dsauter/** dimensionedScalar(
-			   "one", 
-			  dimLength, 
-			   1.
-			  )*/;
+      return dsauter;//*dimensionedScalar(
+			//   "one", 
+			 // dimLength, 
+			 //  1.
+			  //);
 }  
 
 

@@ -4,11 +4,11 @@
 
     phaseModel& phase1 = fluid.phase1();
     phaseModel& phase2 = fluid.phase2();
-    
+
 
     volScalarField& alpha1 = phase1;
     volScalarField& alpha2 = phase2;
-    
+
     volVectorField& U1 = phase1.U();
     surfaceScalarField& phi1 = phase1.phi();
     surfaceScalarField& alphaPhi1 = phase1.phiAlpha();
@@ -36,7 +36,7 @@
 
     volScalarField& rho2 = thermo2.rho();
     const volScalarField& psi2 = thermo2.psi();
-    
+
 	 volVectorField U
     (
         IOobject
@@ -62,13 +62,13 @@
         ),
         fluid.rho()
     );
-    
+
     Info<< "Creating field kinetic energy k\n" << endl;
     volScalarField k("k", 0.5*magSqr(U));
-    
+
     scalar Cmu=0.09;
     scalar dh = 0.1;
-    
+
     Info<< "Creating field dissipation of kinetic energy epsilon\n" << endl;
 	 volScalarField epsilon
     (
@@ -90,53 +90,96 @@
     );
 
 	 // ********************************************************************************************
-	 // brahim selma , 
-	 // declaration of population balance packages 
+	 // Ehsan Askari ,
+	 // declaration of population balance packages
 	 // ********************************************************************************************
-	 
+
 	 volScalarField source_ini
-	 ( 
-	     IOobject 
-	     ( 
-			   "source_ini", 
+	 (
+	     IOobject
+	     (
+			   "source_ini",
 				runTime.timeName(),
-				mesh, 
-				IOobject::MUST_READ, 
-				IOobject::AUTO_WRITE 
+				mesh,
+				IOobject::MUST_READ,
+				IOobject::AUTO_WRITE
 		  ),
 	     mesh
-	 ); 
-	
+	 );
+
+   volScalarField m_ini
+   (
+       IOobject
+       (
+         "m_ini",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+      ),
+       mesh
+   );
+
 	 volScalarField f_ini
-	 ( 
-	     IOobject 
-	     ( 
-			   "f_ini", 
+	 (
+	     IOobject
+	     (
+           "f_ini",
 				runTime.timeName(),
-				mesh, 
-				IOobject::MUST_READ, 
-				IOobject::AUTO_WRITE 
+				mesh,
+				IOobject::MUST_READ,
+				IOobject::AUTO_WRITE
+		  ),
+	     mesh
+	 );
+
+   volScalarField w_ini
+	 (
+	     IOobject
+	     (
+			   "w_ini",
+				runTime.timeName(),
+				mesh,
+				IOobject::MUST_READ,
+				IOobject::AUTO_WRITE
+		  ),
+	     mesh
+	 );
+
+	 volScalarField L_ini
+	 (
+	     IOobject
+	     (
+			   "L_ini",
+				runTime.timeName(),
+				mesh,
+				IOobject::MUST_READ,
+				IOobject::AUTO_WRITE
 		  ),
 	     mesh
 	 );
 
 
-    PtrList<volScalarField> source(3000); 
+    PtrList<volScalarField> source(3000);
     PtrList<volScalarField> f(3000);
+    PtrList<volScalarField> w(3000);
+    PtrList<volScalarField> L(3000);
+    PtrList<volScalarField> m(3000);
 
 
 
- 
-    // read PBM class from 'populationModels' packages 
+
+    // read PBM class from 'populationModels' packages
 	 populationBalanceModel PBM
 	 (
-		  source, 					// source term 
-		  f,							// VF of each class i
+		  source, 					// source term
+  //		  f,							// VF of each class i
+        m,
 		  alpha1						// total volume fraction of dispersed phase
 	 );
 
   //       populationBalanceReturn PBM2;
- 
+
 	 // ************************************************************************************************
 
     Info<< "Calculating field DDtU1 and DDtU2\n" << endl;

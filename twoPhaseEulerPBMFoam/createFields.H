@@ -173,8 +173,8 @@
 	 populationBalanceModel PBM
 	 (
 		  source, 					// source term
-  //		  f,							// VF of each class i
-        m,
+  		  f,							// VF of each class i
+  //      m,
 		  alpha1						// total volume fraction of dispersed phase
 	 );
 

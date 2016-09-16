@@ -45,7 +45,7 @@ classMethodCoeffs
 // --- Quadrature method of moments parameters (TO BE AVAILABLE asap)
 qmomCoeffs
 {
-	dm					dm  0.005;
+	dm					dm [0 1 0 0 0 0 0]  0.005;
 	ResidualAlphaForDsauter		ResidualAlphaForDsauter [0 0 0 0 0 0 0]  1e-6;
         ResidualAlphaForAdjust		ResidualAlphaForAdjust [0 0 0 0 0 0 0]  1e-8;
 	ResidualAlphaForCorrect		ResidualAlphaForCorrect [0 0 0 0 0 0 0]  1e-6; 
