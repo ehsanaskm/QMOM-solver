@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
             rho = fluid.rho();
             fluid.correct();
 		
-            #include "EEqns.H"
+          //  #include "EEqns.H"
 
             #include "UEqns.H"
 

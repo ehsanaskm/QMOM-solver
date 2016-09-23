@@ -5,7 +5,7 @@
 
     volScalarField Cpv1("Cpv1", thermo1.Cpv());
     volScalarField Cpv2("Cpv2", thermo2.Cpv());
-
+Info<<"banana"<<endl;
     volScalarField heatTransferCoeff(fluid.heatTransferCoeff());
 
     fvScalarMatrix he1Eqn

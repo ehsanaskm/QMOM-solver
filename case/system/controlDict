@@ -19,7 +19,7 @@ application     populationFoam;
 
 startFrom       startTime;
 
-startTime       15;
+startTime       0;
 
 stopAt          endTime;
 

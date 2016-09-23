@@ -212,7 +212,7 @@ qmom::qmom
   		),
   		alpha_.mesh()
   	),
-    L1
+       L1
   	(
   		IOobject
   		(
@@ -323,11 +323,14 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w,
 
      scalar *diam = new scalar[Nm_+ 1];
 
-
-    diam[0] = Foam::pow(4, -1./3.)*dm_.value();
-    diam[1] =                  dm_.value();
-    diam[2] = Foam::pow(4,  1./3.)*dm_.value();
-
+/*
+    diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
+    diam[1] =                  dm_.value()*1000;
+    diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;
+*/
+    diam[0] = 15.28;
+    diam[1] = 7.18;
+    diam[2] = 2.52;
 
       volScalarField vf = 1.-alpha;
 
@@ -349,15 +352,18 @@ for(int k = 0; k <= Nm_-1; k++)
                   S[k]  +=   populationBalanceModel_.rhoa().value()
         									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1]
                           * Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
-
+                  
 
   			}
 
 	}
+
+
 }
 
 for(int k = 0; k <= Nm_-1; k++)
 {
+
   for (int i = 0; i<= nodes_-1; i++)
 	{
 
@@ -378,6 +384,7 @@ for(int k = 0; k <= Nm_-1; k++)
   			}
 
 	}
+
 }
 
 
@@ -401,9 +408,12 @@ const
 
      scalar *diam = new scalar[Nm_+ 1];
 
-    diam[0] = Foam::pow(4, -1./3.)*dm_.value();
-    diam[1] =                  dm_.value();
-    diam[2] = Foam::pow(4,  1./3.)*dm_.value();
+  /*  diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
+    diam[1] =                  dm_.value()*1000;
+    diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;*/
+    diam[0] = 15.28;
+    diam[1] = 7.18;
+    diam[2] = 2.52;
     volScalarField epsf = epsilon;
 
 
@@ -556,13 +566,14 @@ void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>&
       if(w[i][II] <= 0 || w[i][II] > 1) w[i][II]=alpha[II];
 
       // abscissas are the eigenValues
+      
       L[i][II] = mag(d[i]);
 
       // limitation to 10 mm of diameter
-      if(L[i][II] > 0.01)
-	  {
-		L[i][II] = 0.01;
-	  }
+     // if(L[i][II] > 0.01)
+//	  {
+//		L[i][II] = 0.01;
+//	  }
 	} // end loop i
   } // end loop forALL
 
@@ -593,7 +604,7 @@ tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volSc
 
   // partial result of Sauter diameter d32
     result = m[3]/(m[2]+SMALL)/1000.0;
-    Info << average(result) << endl;
+    
   forAll(result, cellI)
   {
 	  if(alpha[cellI] > ResidualAlphaForDsauter_.value())
@@ -650,13 +661,13 @@ void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const v
 		}
    }
 
-
+/*
 	for(int i=1; i<=nodes_; i++)
    {
       forAll(L[i], I)
 		{
 ///////////////////////////////////////////////////////////////
-            if(alpha[I] > ResidualAlphaForDsauter_.value())
+/           if(alpha[I] > ResidualAlphaForDsauter_.value())
             {
 
 
@@ -667,10 +678,12 @@ void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const v
             {
                  L[i][I] = dMin_.value();
             }
+
 ///////////////////////////////////////////////////////////////
 
 		 }
    }
+*/
 
 }
 
@@ -1016,13 +1029,12 @@ L[1]=L1;L[2]=L2;L[3]=L3;
 
 		qmom::adjust(source,L,alpha);
 
-    Info << "L1" << average(L[1]) << endl;
+  /*  Info << "L1" << average(L[1]) << endl;
     Info << "L2" << average(L[2]) << endl;
     Info << "L3" << average(L[3]) << endl;
     Info << "w1" << average(w[1]) << endl;
     Info << "w2" << average(w[2]) << endl;
-    Info << "w3" << average(w[3]) << endl;
-
+    Info << "w3" << average(w[3]) << endl;*/
 
 
  		for(label i=0;i<=Nm_-1;i++)
@@ -1031,7 +1043,9 @@ L[1]=L1;L[2]=L2;L[3]=L3;
 
 	  		qmom::coalescenceKernel(source,w,alpha,epsilon);
 
+
 	   		qmom::breakupKernel(source,w,alpha);
+
 
 	  	volScalarField Sb = source[i]/
 		                            populationBalanceModel_.breakupModel().rhoa();
@@ -1043,14 +1057,21 @@ L[1]=L1;L[2]=L2;L[3]=L3;
 		//	{
 
 
-     word fScheme("div(phia,mi)");
+     word fScheme("div(phia,mi)"); //Vase inke pointerlist darim vase m[i] az een estafe kardim
 
 
      fvScalarMatrix miEqn
      (
+
          fvm::ddt(alpha, m[i])
         + fvm::div(fvc::flux(phia, alpha, fScheme), m[i], fScheme)
         - fvm::Sp(fvc::div(phia), m[i])
+        
+
+ /*       fvm::ddt(m[i])
+        + fvm::div(phia, m[i], fScheme)
+*/
+
      );
 
 				solve(miEqn == Sb);
@@ -1068,14 +1089,10 @@ m[2]=mag(m[2]);
 m[3]=mag(m[3]);
 m[4]=mag(m[4]);
 m[5]=mag(m[5]);
-Info << "S0" << average(m[0]) << endl;
-Info << "S1" << average(m[1]) << endl;
-Info << "S2" << average(m[2]) << endl;
-Info << "S3" << average(m[3]) << endl;
-Info << "S4" << average(m[4]) << endl;
-Info << "S5" << average(m[5]) << endl;
+
 
     qmom::weightsAbscissas(w,L,m,alpha);
+
 
     m[0]=mag(m[0]);
     m[1]=mag(m[1]);
@@ -1090,10 +1107,11 @@ Info << "S5" << average(m[5]) << endl;
     w[1]=mag(w[1])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
     w[2]=mag(w[2])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
     w[3]=mag(w[3])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
-Info<<"banana"<<endl;
-    L[1]=0.012*mag(L[1])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
-    L[2]=0.012*mag(L[2])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
-    L[3]=0.012*mag(L[3])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
+
+
+  //  L[1]=0.012*mag(L[1])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
+   // L[2]=0.012*mag(L[2])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
+   // L[3]=0.012*mag(L[3])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
 
 
 
