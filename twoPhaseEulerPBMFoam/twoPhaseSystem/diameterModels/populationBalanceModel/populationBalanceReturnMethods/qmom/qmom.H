@@ -174,6 +174,7 @@ class qmom
 
 
 
+
 			//- class method selector
 			//word populationBalanceMethodName_;
 
@@ -229,6 +230,7 @@ public:
 		  virtual void breakupKernel
 		  (
 				PtrList<volScalarField>&,
+        PtrList<volScalarField>&,
 				PtrList<volScalarField>&,
 				const volScalarField&
 		  ) const;
@@ -238,6 +240,7 @@ public:
 		  (
 				PtrList<volScalarField>&,
 				PtrList<volScalarField>&,
+        PtrList<volScalarField>&,
 				const volScalarField&,
 				const volScalarField&
 		  ) const;

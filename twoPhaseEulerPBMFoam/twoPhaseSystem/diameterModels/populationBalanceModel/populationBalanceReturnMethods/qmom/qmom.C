@@ -314,25 +314,35 @@ scalar  qmom::kronecker(label& i, label& j) const
   else return 0.0;
 }
 
-void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w, const volScalarField& alpha) const
+void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w, PtrList<volScalarField>& L, const volScalarField& alpha) const
 {
 
 	scalar d_i;
   scalar d_j;
 
 
-     scalar *diam = new scalar[Nm_+ 1];
+   scalar *diam = new scalar[Nm_+ 1];
 
-/*
-    diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
-    diam[1] =                  dm_.value()*1000;
-    diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;
-*/
-    diam[0] = 15.28;
-    diam[1] = 7.18;
-    diam[2] = 2.52;
 
-      volScalarField vf = 1.-alpha;
+
+  //  diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
+  //  diam[1] =                  dm_.value()*1000;
+  //  diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;
+
+
+
+      diam[0] = average(L[1]).value();
+      diam[1] = average(L[2]).value();
+      diam[2] = average(L[3]).value();
+Info<<"L1= "<<average(L[1]).value()<<endl;
+Info<<"L2= "<<average(L[2]).value()<<endl;
+Info<<"L3= "<<average(L[3]).value()<<endl;
+
+  //  diam[1] = 0.00718;
+  //  diam[2] = 0.00252;
+
+    volScalarField vf = 1.-alpha;
+    //volScalarField vf = alpha;
 
 for(int k = 0; k <= Nm_-1; k++)
 {
@@ -340,19 +350,19 @@ for(int k = 0; k <= Nm_-1; k++)
 	{
 
 
-  			d_i = diam[i];
+  			d_i = diam[i]/1000;
 
 
   			for(int j = i+1 ; j <= nodes_-1 ; j++)
    			{
 
-  				d_j = diam[j];
+  				d_j = diam[j]/1000;
 
 
                   S[k]  +=   populationBalanceModel_.rhoa().value()
         									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1]
                           * Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
-                  
+
 
   			}
 
@@ -395,6 +405,7 @@ void qmom::coalescenceKernel
 (
 	PtrList<volScalarField>& S,
 	PtrList<volScalarField>& w,
+  PtrList<volScalarField>& L,
 	const volScalarField& alpha,
 	const volScalarField& epsilon
 )
@@ -408,12 +419,16 @@ const
 
      scalar *diam = new scalar[Nm_+ 1];
 
-  /*  diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
-    diam[1] =                  dm_.value()*1000;
-    diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;*/
-    diam[0] = 15.28;
-    diam[1] = 7.18;
-    diam[2] = 2.52;
+     diam[0] = average(L[1]).value();
+     diam[1] = average(L[2]).value();
+     diam[2] = average(L[3]).value();
+
+//    diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
+//    diam[1] =                  dm_.value()*1000;
+//    diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;
+//    diam[0] = 15.28;
+//    diam[1] = 7.18;
+  //  diam[2] = 2.52;
     volScalarField epsf = epsilon;
 
 
@@ -421,12 +436,12 @@ for(int k = 0; k <= Nm_-1; k++)
 {
 	for (int i = 0; i<=nodes_-1; i++)
 	{
-			d_i = diam[i];
+			d_i = diam[i]/1000;
 
 
 			for(int  j = 0 ; j <= nodes_-1 ; j++)
 			{
-				d_j = diam[j];
+				d_j = diam[j]/1000;
 
 
 				S[k] += 0.5*populationBalanceModel_.rhoa().value()
@@ -566,14 +581,10 @@ void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>&
       if(w[i][II] <= 0 || w[i][II] > 1) w[i][II]=alpha[II];
 
       // abscissas are the eigenValues
-      
+
       L[i][II] = mag(d[i]);
 
-      // limitation to 10 mm of diameter
-     // if(L[i][II] > 0.01)
-//	  {
-//		L[i][II] = 0.01;
-//	  }
+
 	} // end loop i
   } // end loop forALL
 
@@ -604,7 +615,7 @@ tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volSc
 
   // partial result of Sauter diameter d32
     result = m[3]/(m[2]+SMALL)/1000.0;
-    
+
   forAll(result, cellI)
   {
 	  if(alpha[cellI] > ResidualAlphaForDsauter_.value())
@@ -660,6 +671,18 @@ void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const v
 			S[j][II]=0;
 		}
    }
+
+   //limitation to 10 mm of diameter
+   for(int i=0; i<=nodes_; i++)
+    {
+             forAll(L[i], II)
+           {
+                if(L[i][II] > 10)
+                {
+                L[i][II] = 10;
+                }
+           }
+    }
 
 /*
 	for(int i=1; i<=nodes_; i++)
@@ -1041,10 +1064,10 @@ L[1]=L1;L[2]=L2;L[3]=L3;
 		{
 			// update bubbles breakage/coalescence
 
-	  		qmom::coalescenceKernel(source,w,alpha,epsilon);
+	  	 	qmom::coalescenceKernel(source,w,L,alpha,epsilon);
 
 
-	   		qmom::breakupKernel(source,w,alpha);
+	  		qmom::breakupKernel(source,w,L,alpha);
 
 
 	  	volScalarField Sb = source[i]/
@@ -1066,7 +1089,7 @@ L[1]=L1;L[2]=L2;L[3]=L3;
          fvm::ddt(alpha, m[i])
         + fvm::div(fvc::flux(phia, alpha, fScheme), m[i], fScheme)
         - fvm::Sp(fvc::div(phia), m[i])
-        
+
 
  /*       fvm::ddt(m[i])
         + fvm::div(phia, m[i], fScheme)

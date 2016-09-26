@@ -34,8 +34,8 @@ SourceFiles
     LuoAndSvendsenBreak.C
 
 Author
-    brahim selma,  
-	 chercheur 
+    brahim selma,
+	 chercheur
 
 \*---------------------------------------------------------------------------*/
 
@@ -61,19 +61,19 @@ class LuoAndSvendsenBreak
 
 			//- subDictionary Luo and Svendsen's model
 		  dictionary dictLuoAndSvendsenBreakup_;
-    
+
          //- Gas density
         dimensionedScalar rhoa_;
-        
+
         //- Liquid density
         dimensionedScalar rhob_;
-        
+
          //- Surface tension liquid-gas
-        dimensionedScalar sigma_; 
-        
-         //- Luo and Svendsen's model parameters    
-		  scalar beta_; 
-		  dimensionedScalar k_; 
+        dimensionedScalar sigma_;
+
+         //- Luo and Svendsen's model parameters
+		  scalar beta_;
+		  dimensionedScalar k_;
 
 
     // Private Member Functions
@@ -111,30 +111,36 @@ public:
 
     // Member Functions
 
-        //- Return bubbles breakup rate 
+        //- Return bubbles breakup rate
+        
         virtual dimensionedScalar breakupRate
         (
-				volScalarField&, 
+				volScalarField&,
 				scalar&,
 				scalar&
+
 		  ) const;
-        
+
+
+
+
+
 		  //- Return bubbles breakup frequency
 		  virtual dimensionedScalar breakupFrequency
         (
-				volScalarField&, 
+				volScalarField&,
 				scalar&,
 				scalar&
 		  ) const;
-		  
+
 		  //- Return gas density rhoa as scalar
         virtual dimensionedScalar rhoa() const;
 
 		  //- Return liquid density rhob as scalar
         virtual dimensionedScalar rhob() const;
-		 
-		  
-		 
+
+
+
         //- If the breakup models needs population models
         virtual bool populationModelNeeded() const
         {
