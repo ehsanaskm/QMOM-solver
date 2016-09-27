@@ -334,9 +334,7 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w,
       diam[0] = average(L[1]).value();
       diam[1] = average(L[2]).value();
       diam[2] = average(L[3]).value();
-Info<<"L1= "<<average(L[1]).value()<<endl;
-Info<<"L2= "<<average(L[2]).value()<<endl;
-Info<<"L3= "<<average(L[3]).value()<<endl;
+
 
   //  diam[1] = 0.00718;
   //  diam[2] = 0.00252;
@@ -388,10 +386,9 @@ for(int k = 0; k <= Nm_-1; k++)
   				d_j = diam[j];
 
 
-                //  S[k]  -=   populationBalanceModel_.rhoa().value()
-        	//								* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1];
                   S[k]  -=   populationBalanceModel_.rhoa().value()
-        									*w[i+1];
+        									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1];
+
 
 
   			}

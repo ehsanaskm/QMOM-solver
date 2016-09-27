@@ -334,9 +334,7 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w,
       diam[0] = average(L[1]).value();
       diam[1] = average(L[2]).value();
       diam[2] = average(L[3]).value();
-Info<<"L1= "<<average(L[1]).value()<<endl;
-Info<<"L2= "<<average(L[2]).value()<<endl;
-Info<<"L3= "<<average(L[3]).value()<<endl;
+
 
   //  diam[1] = 0.00718;
   //  diam[2] = 0.00252;
