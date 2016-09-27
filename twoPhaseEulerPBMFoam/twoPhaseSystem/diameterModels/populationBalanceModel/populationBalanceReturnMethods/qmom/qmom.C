@@ -361,7 +361,8 @@ for(int k = 0; k <= Nm_-1; k++)
 
                   S[k]  +=   populationBalanceModel_.rhoa().value()
         									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1]
-                          * Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
+                         * Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
+
 
 
   			}
@@ -389,6 +390,7 @@ for(int k = 0; k <= Nm_-1; k++)
 
                   S[k]  -=   populationBalanceModel_.rhoa().value()
         									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1];
+
 
 
   			}

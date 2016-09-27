@@ -62,6 +62,8 @@ class LuoAndSvendsenBreak
 			//- subDictionary Luo and Svendsen's model
 		  dictionary dictLuoAndSvendsenBreakup_;
 
+
+  
          //- Gas density
         dimensionedScalar rhoa_;
 
@@ -123,11 +125,9 @@ public:
 
 
 
-
-
 		  //- Return bubbles breakup frequency
 		  virtual dimensionedScalar breakupFrequency
-        (
+                  (
 				volScalarField&,
 				scalar&,
 				scalar&

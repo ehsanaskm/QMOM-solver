@@ -62,7 +62,7 @@ class breakupLaw
         //- Name
         const word name_;
 
-		  //- Reference to volume fracion of dispersed phase 
+		  //- Reference to volume fracion of dispersed phase
 		  const volScalarField& alpha_;
 
 
@@ -88,9 +88,9 @@ protected:
         {
             return alpha_;
         }
-        
-       
-        
+
+
+
 public:
 
     //- Runtime type information
@@ -147,24 +147,31 @@ public:
             return name_;
         }
 
-        //- Calculate and return breakup rate 
-        virtual dimensionedScalar breakupRate
+        //- Calculate and return breakup rate
+/*       virtual dimensionedScalar breakupRate
         (
 				volScalarField&, scalar&, scalar&
+			) const = 0;*/
+
+        virtual tmp<volScalarField> breakupRate
+                        (
+				volScalarField&, scalar&, scalar&
 			) const = 0;
-       
-      /*  //- Calculate and return breakup frequency 
+
+
+
+        //- Calculate and return breakup frequency
         virtual dimensionedScalar breakupFrequency
         (
 				volScalarField&, scalar&, scalar&
-			) const = 0; */
-       
+			) const = 0;
+
        // references to liquid and gas density
         virtual dimensionedScalar rhoa() const = 0;
         virtual dimensionedScalar rhob() const = 0;
-       
-      
-       
+
+
+
         //- If the breakup coalescence models needs population model
         virtual bool populationModelNeeded() const
         {
