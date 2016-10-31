@@ -322,7 +322,7 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w,
 
 
    
-for(int k = 0; k < Nm_-1; k++)
+for(int k = 0; k <= Nm_-1; k++)
 {
        
 
@@ -362,7 +362,7 @@ for(int k = 0; k < Nm_-1; k++)
 }
 
 
-for(int k = 0; k < Nm_-1; k++)
+for(int k = 0; k <= Nm_-1; k++)
 {
 
   for (int i = 0; i<= nodes_-1; i++)
@@ -423,7 +423,7 @@ const
 
 
 
-for(int k = 0; k < Nm_-1; k++)
+for(int k = 0; k <= Nm_-1; k++)
 {
 
 	
@@ -453,7 +453,7 @@ for(int k = 0; k < Nm_-1; k++)
                       
 }
    
-for(int k = 0; k < Nm_-1; k++)
+for(int k = 0; k <= Nm_-1; k++)
 {
 
 
@@ -713,7 +713,7 @@ tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volSc
 void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const volScalarField& alpha) const
 {
 
-	for(int j=0; j<Nm_-1; j++)
+	for(int j=0; j<=Nm_-1; j++)
    {
       forAll(S[j], II)
 		{

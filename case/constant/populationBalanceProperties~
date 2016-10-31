@@ -46,8 +46,8 @@ classMethodCoeffs
 qmomCoeffs
 {
 	dm					dm [0 1 0 0 0 0 0]  0.005;
-	residualAlpha	residualAlpha [0 0 0 0 0 0 0]  1e-3;
-	Nm					7; 
+	residualAlpha	residualAlpha [0 0 0 0 0 0 0]  1e-4;
+	Nm					6; 
         nodes                                   3;
 	h0					h0 [0 1 0 0 0 0 0]  1e-4; 
 	hf					hf [0 1 0 0 0 0 0]  1e-8; 
@@ -72,13 +72,6 @@ qmomCoeffs
 	m5  m5 [0 1 0 0 0 0 0] 4450;
         m6  m6 [0 1 0 0 0 0 0] 26140;
 
-        w1  w1 [0 1 0 0 0 0 0] 0.1667;
- 	w2  w2 [0 1 0 0 0 0 0] 0.6667;
-	w3  w3 [0 1 0 0 0 0 0] 0.1667;
-
-	L1  L1 [0 1 0 0 0 0 0] 3.2679;
-	L2  L2 [0 1 0 0 0 0 0] 5;
-	L3  L3 [0 1 0 0 0 0 0] 6.73;
 }
 
 
@@ -104,11 +97,11 @@ breakupModels
 // --- bubble coalscence models selector
 coalescenceModels
 {
-	//   modelName		LuoAndSvendsen;
-         modelName		Constant;
+	 modelName		LuoAndSvendsen;
+        // modelName		Constant;
 	
-//	LuoAndSvendsenCoeffs
-          ConstantCoeffs
+	LuoAndSvendsenCoeffs
+//          ConstantCoeffs
    {
 		rhob        rhob [1 -3 0 0 0 0 0] 	 1000.0;		// liquid density 
 		rhoa			rhoa [1 -3 0 0 0 0 0] 	 1.2;			// gas density
