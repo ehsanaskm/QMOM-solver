@@ -1,1 +1,1 @@
-../diameterModels/populationBalanceModel/breakupLaws/LuoAndSvendsenBreak/LuoAndSvendsenBreak_org.C
+../diameterModels/populationBalanceModel/breakupLaws/ConstantBreak/LuoAndSvendsenBreak_org.C

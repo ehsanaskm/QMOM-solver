@@ -176,6 +176,19 @@ qmom::qmom
   		),
   		alpha_.mesh()
   	),
+  	m6
+  	(
+  		IOobject
+  		(
+  			"m6",
+  			alpha_.time().timeName(),
+  			alpha_.db(),
+  			IOobject::MUST_READ,
+  			IOobject::AUTO_WRITE
+  		),
+  		alpha_.mesh()
+  	),
+
     w1
   	(
   		IOobject
@@ -249,25 +262,17 @@ qmom::qmom
   		alpha_.mesh()
   	),
 
-	ResidualAlphaForDsauter_(dict_.lookup("ResidualAlphaForDsauter")),
-  ResidualAlphaForAdjust_(dict_.lookup("ResidualAlphaForAdjust")),
-  ResidualAlphaForCorrect_(dict_.lookup("ResidualAlphaForCorrect")),
-  m0_(dict_.lookup("m0")),
-  m1_(dict_.lookup("m1")),
-  m2_(dict_.lookup("m2")),
-  m3_(dict_.lookup("m3")),
-  m4_(dict_.lookup("m4")),
-  m5_(dict_.lookup("m5")),
-  w1_(dict_.lookup("w1")),
-  w2_(dict_.lookup("w2")),
-  w3_(dict_.lookup("w3")),
-  L1_(dict_.lookup("L1")),
-  L2_(dict_.lookup("L2")),
-  L3_(dict_.lookup("L3")),
+	residualAlpha_(dict_.lookup("residualAlpha")),
+	m0_(dict_.lookup("m0")),
+	m1_(dict_.lookup("m1")),
+	m2_(dict_.lookup("m2")),
+	m3_(dict_.lookup("m3")),
+	m4_(dict_.lookup("m4")),
+	m5_(dict_.lookup("m5")),
+	m6_(dict_.lookup("m6")),
 	Nm_(readLabel(dict_.lookup("Nm"))),
-  nodes_(readLabel(dict_.lookup("nodes"))),
-  dm_(dict_.lookup("dm")),
-	h0_(dict_.lookup("h0")),
+        nodes_(readLabel(dict_.lookup("nodes"))),
+       	h0_(dict_.lookup("h0")),
 	hf_(dict_.lookup("hf")),
 	beta1_(dict_.lookup("beta1")),
 	beta2_(dict_.lookup("beta2")),
@@ -276,11 +281,11 @@ qmom::qmom
 	sigma_(dict_.lookup("sigma")),
 	breakCoeff_(dict_.lookup("breakCoeff")),
 	coalCoeff_(dict_.lookup("coalCoeff")),
-	S_(dict_.lookup("S")),
 	dMin_(dict_.lookup("dMin")),
 	dMax_(dict_.lookup("dMax")),
 	maxIters_(readLabel(dict_.lookup("maxIters"))),
 	loopTolerance_(readScalar(dict_.lookup("loopTolerance")))
+   
 
 
 
@@ -295,39 +300,16 @@ qmom::~qmom()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-scalar qmom::funcTest(scalar& x, scalar& y,	scalar& z) const
-{
-	 if ( y >= x && y <= z)
-    {
-      return 1.0;
-    }
-	 else
-    {
-      return 0.0;
-    }
-}
-
-scalar  qmom::kronecker(label& i, label& j) const
-{
-  if (i == j) return 1.0;
-
-  else return 0.0;
-}
 
 void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w, PtrList<volScalarField>& L, const volScalarField& alpha) const
 {
 
-	scalar d_i;
+  scalar d_i;
   scalar d_j;
 
 
    scalar *diam = new scalar[Nm_+ 1];
 
-
-
-  //  diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
-  //  diam[1] =                  dm_.value()*1000;
-  //  diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;
 
 
 
@@ -336,15 +318,54 @@ void qmom::breakupKernel(PtrList<volScalarField>& S, PtrList<volScalarField>& w,
       diam[2] = average(L[3]).value();
 
 
-  //  diam[1] = 0.00718;
-  //  diam[2] = 0.00252;
-
     volScalarField vf = 1.-alpha;
-    //volScalarField vf = alpha;
 
-for(int k = 0; k <= Nm_-1; k++)
+
+   
+for(int k = 0; k < Nm_-1; k++)
 {
+       
+
 	for (int i = 0; i<= nodes_-1; i++)
+	{
+
+
+  			    d_i = diam[i]/1000;
+			
+
+
+  			for(int j = i+1 ; j <= nodes_-1 ; j++)
+   			{
+			for (int j = 0; j<= nodes_-1; j++)
+			{
+
+
+  				d_j = diam[j]/1000;
+					
+
+
+                   
+
+
+                  S[k]  +=  populationBalanceModel_.rhoa().value()*populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1]
+                      * Foam::pow(2.0,   scalar((3.0-k)/3.0))*Foam::pow(diam[i], k);
+
+
+
+
+  			} 
+			  }
+			 
+
+	}
+
+}
+
+
+for(int k = 0; k < Nm_-1; k++)
+{
+
+  for (int i = 0; i<= nodes_-1; i++)
 	{
 
 
@@ -353,45 +374,19 @@ for(int k = 0; k <= Nm_-1; k++)
 
   			for(int j = i+1 ; j <= nodes_-1 ; j++)
    			{
+			  for (int i = 0; i<= nodes_-1; i++)
+				{
 
-  				d_j = diam[j]/1000;
-
-
-                  S[k]  +=   populationBalanceModel_.rhoa().value()
-        									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1]
-                         * Foam::pow(2.0,   scalar((3.0-k)/3.0))/Foam::pow(diam[i], k);
+  				
+				d_j = diam[i]/1000;
 
 
-
-  			}
-
-	}
-
-
-}
-
-for(int k = 0; k <= Nm_-1; k++)
-{
-
-  for (int i = 0; i<= nodes_-1; i++)
-	{
-
-
-  			d_i = diam[i];
-
-
-  			for(int j = i+1 ; j <= nodes_-1 ; j++)
-   			{
-
-  				d_j = diam[j];
-
-
-                  S[k]  -=   populationBalanceModel_.rhoa().value()
-        									* populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*w[i+1];
+                    S[k]  -=   populationBalanceModel_.rhoa().value()*populationBalanceModel_.breakupModel().breakupRate(vf, d_j, d_i)*Foam::pow(diam[i], k)*w[i+1];
 
 
 
   			}
+		      }
 
 	}
 
@@ -405,7 +400,7 @@ void qmom::coalescenceKernel
 (
 	PtrList<volScalarField>& S,
 	PtrList<volScalarField>& w,
-  PtrList<volScalarField>& L,
+        PtrList<volScalarField>& L,
 	const volScalarField& alpha,
 	const volScalarField& epsilon
 )
@@ -423,17 +418,45 @@ const
      diam[1] = average(L[2]).value();
      diam[2] = average(L[3]).value();
 
-//    diam[0] = Foam::pow(4, -1./3.)*dm_.value()*1000;
-//    diam[1] =                  dm_.value()*1000;
-//    diam[2] = Foam::pow(4,  1./3.)*dm_.value()*1000;
-//    diam[0] = 15.28;
-//    diam[1] = 7.18;
-  //  diam[2] = 2.52;
+
     volScalarField epsf = epsilon;
 
 
-for(int k = 0; k <= Nm_-1; k++)
+
+for(int k = 0; k < Nm_-1; k++)
 {
+
+	
+
+	for (int i = 0; i<=nodes_-1; i++)
+	{
+			  d_i = diam[i]/1000;
+			
+
+
+			for(int  j = 0 ; j <= nodes_-1 ; j++)
+			{
+				d_j = diam[j]/1000;
+				
+
+
+ 
+  
+				S[k] += 0.5*w[i+1]*w[j+1]*Foam::pow ((Foam::pow(diam[i], 3.0)+Foam::pow(diam[j], 3.0)), scalar(k/3.0))*
+						populationBalanceModel_.coalescenceModel().coalescenceRate(d_i,d_j,epsf)*populationBalanceModel_.rhoa().value();
+
+			
+			}
+
+
+	}
+                      
+}
+   
+for(int k = 0; k < Nm_-1; k++)
+{
+
+
 	for (int i = 0; i<=nodes_-1; i++)
 	{
 			d_i = diam[i]/1000;
@@ -443,51 +466,33 @@ for(int k = 0; k <= Nm_-1; k++)
 			{
 				d_j = diam[j]/1000;
 
-
-				S[k] += 0.5*populationBalanceModel_.rhoa().value()
-				                      * populationBalanceModel_.coalescenceModel().coalescenceRate(d_i,d_j,epsf)*w[j]
-                              *Foam::pow ((Foam::pow(d_i, 3.0)+Foam::pow(d_j, 3.0)), scalar(k/3.0));
-
+ 
+                                S[k] -= Foam::pow(diam[i], k)*w[i+1]*w[j+1]
+					*populationBalanceModel_.coalescenceModel().coalescenceRate(d_i,d_j,epsf)*populationBalanceModel_.rhoa().value();
 
 			}
 
 
 	}
+
+
+
+
 }
 
-for(int k = 0; k <= Nm_-1; k++)
-{
-	for (int i = 0; i<=nodes_-1; i++)
-	{
-			d_i = diam[i];
-
-
-			for(int  j = 0 ; j <= nodes_-1 ; j++)
-			{
-				d_j = diam[j];
-
-
-				S[k] -= populationBalanceModel_.rhoa().value()*Foam::pow(diam[i], k)*w[i]
-				                      * populationBalanceModel_.coalescenceModel().coalescenceRate(d_i,d_j,epsf)*w[j];
-
-
-
-			}
-
-
-	}
-}
-
-
+ 
 	return;
 }
 
 
 void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>& L, PtrList<volScalarField>& m, const volScalarField alpha) const
 {
+  
   label N=lrint(nodes_);
   scalar matriceP[N*N][N*N],ai[N*N],bi[N*N];
-  scalar d[N*N],a[N*N][N*N],v[N*N][N*N],alphaii[N*N];
+  scalar d[N*N],a[N*N][N*N],v[N*N][N*N],alphai[N*N];
+  scalar norm_position[N*N];
+
 
   forAll(alpha, II)
   {
@@ -496,100 +501,148 @@ void qmom::weightsAbscissas(PtrList<volScalarField>& w, PtrList<volScalarField>&
     {
       if(i==1) {matriceP[i][1]=1.0;}
       else     {matriceP[i][1]=0.0;}
-    }
-    m[0][II] = 1.0 ;  // forced to be unit
+    } 
+
+   // position[0][II] = 1.0 ;  // position[0][II] is moment0, which is forced to be unit here
+
+    for(label i=1; i<2*N+1; i++)
+    {
+     norm_position[i-1] = m[i-1][II]/max(m[0][II], 1e-10);
+    } 
 
     // second column
     for(label i=1; i<=2*N; i++)
     {
-         matriceP[i][2] = pow(-1,i-1)*mag(m[i-1][II]);
+         //  matriceP[i][2] = pow(-1,i-1.0)*mag(position[i-1][II]);  
+         //  matriceP[i][2] = pow(-1,i-1.0)*(position[i-1][II]);
+          matriceP[i][2] = pow(-1,i-1.0)*norm_position[i-1];
     }
+     
 
-    //rest of the column
+
+    //rest of the column   
     for(label j=3; j<= 2*N+1; j++)
     {
-       for(label i=1; i<= 2*N+2-j; i++)
+       for(label i=1; i<= 2*N+2-j; i++)   
        {
-			matriceP[i][j] = matriceP[1][j-1]*matriceP[i+1][j-2]
-                           - matriceP[1][j-2]*matriceP[i+1][j-1];
+	matriceP[i][j] = matriceP[1][j-1]*matriceP[i+1][j-2]-matriceP[1][j-2]*matriceP[i+1][j-1];
+                                 
        }
-    }
+                     
 
-    // calculation of alpha[i]
-    alphaii[1]=0.0;
+    } 
+       
+
+// calculation of alphai[i]  
+    alphai[1]=0.0; // Zeta1 =0.0
     for(label i=2; i<= 2*N; i++)
     {
-       	alphaii[i] = matriceP[1][i+1]/(matriceP[1][i]*matriceP[1][i-1]);
+       	alphai[i] = matriceP[1][i+1]/(matriceP[1][i]*matriceP[1][i-1]+SMALL);
+      // alphai[i] = matriceP[1][i+1]/(matriceP[1][i]*matriceP[1][i-1]+SMALL); 
+       // Info << "matriceP[1][i]" << matriceP[1][i] << endl;
+       // Info << "matriceP[1][i-1]" << matriceP[1][i-1] << endl;
+       // Info << "teste" << matriceP[1][i]*matriceP[1][i-1]+SMALL << endl;
     }
-
+    
     //- calculation of coefficients a[i] and b[i]
     for(label i=1; i<=N; i++)
     {
-		ai[i] = alphaii[2*i] + alphaii[2*i-1];
+		ai[i] = alphai[2*i] + alphai[2*i-1]; 
     }
+          /* Info << "ai1" << "\t" << ai[1] << endl;
+           Info << "ai2" << "\t" << ai[2] << endl;
+           Info << "ai3" << "\t" << ai[3] << endl;*/
+
 
     for(label i=1; i<= N-1; i++)
     {
-		bi[i] = ::sqrt(mag(alphaii[2*i+1]*alphaii[2*i])); // positive root
-    }
+		bi[i] = Foam::sqrt(mag(alphai[2*i+1]*alphai[2*i])); // positive root
+                //bt[i] = -Foam::sqrt(alphai[2*i+1]*alphai[2*i]); // positive root
+    } 
 
-	//- eigenValues and eigenVector for the Jacobi matrice
+          
+          // Info << "bi1" << "\t" << bi[1] << endl;
+          // Info << "bi2" << "\t" << bi[2] << endl;
+  
+	//- eigenValues and eigenVector for the Jacobi matrice 
 	// Diagonal of symmetric tridiagonal matrice
-	for (int i=1;i<=N;i++)
+	for (label i=1;i<=N;i++)
 	{
       a[i][i]   = ai[i];
-	}
-
+	}  
+	
 	// Subdiagonal of symmetric tridiagonal matrix
-	for (int i=1;i<N;i++)
+	for (label i=1;i<N;i++)
 	{
       a[i+1][i] = a[i][i+1] = bi[i];
-	}
-      a[3][1]=a[1][3]=0.;
-
+	}  
+      a[3][1]=a[1][3]=1e-10; // before it was 0.
+  
 	// tensor definition
 	tensor ABC;
-	tensor evs;
-
+	tensor evs; 
+  
 	// filling the tensor ABC
 	// WARNING ! max N=3 (nodes of quadrature)
-	ABC.xx()=a[1][1]; ABC.xy()=a[1][2]; ABC.xz()=a[1][3];
+	ABC.xx()=a[1][1]; ABC.xy()=a[1][2]; ABC.xz()=a[1][3]; 
 	ABC.yx()=a[2][1]; ABC.yy()=a[2][2]; ABC.yz()=a[2][3];
 	ABC.zx()=a[3][1]; ABC.zy()=a[3][2]; ABC.zz()=a[3][3];
 
-	// calculating eigenvalues
+	// calculating eigenvalues 
 	vector e_values=eigenValues(ABC);
 
-	// calculating eigenvector
-	evs = eigenVectors(ABC);
+	// calculating eigenvector 
+	evs = eigenVectors(ABC); 
 
 	// allocation of the eigenvector
-	v[1][1] = evs.xx();
+	v[1][1] = evs.xx(); 
 	v[1][2] = evs.yx();
-	v[1][3] = evs.zx();
+	v[1][3] = evs.zx(); 
+
+/*Info << "v11" << "\t" << v[1][1] << endl;
+Info << "v12" << "\t" << v[1][2] << endl;
+Info << "v13" << "\t" << v[1][3] << endl;*/
 
 	// allocation of the eigenvalues
-	d[1] = e_values.x();
+	d[1] = e_values.x(); 
 	d[2] = e_values.y();
 	d[3] = e_values.z();
 
-	//- final allocation
+/*Info << "EigenVa1" << "\t" << d[1] << endl;
+Info << "EigenVa2" << "\t" << d[2] << endl;
+Info << "EigenVa3" << "\t" << d[3] << endl;*/
+
+   //- final allocation
 	for(int i=1; i<=N; i++)
 	{
-      // weights are the first component of eigenVectors
-      w[i][II] = mag(m[0][II]*sqr(v[1][i]));
-      if(w[i][II] <= 0 || w[i][II] > 1) w[i][II]=alpha[II];
+      // Weights (W) are the first component of eigenVectors 
+          //   W[i][II] = mag(position[0][II]*sqr(v[1][i]));
+         //  W[i][II] = mag(sqr(v[1][i]));
+       //   if(W[i][II] <= 0 || W[i][II] > 1) W[i][II]=moment0[II];     
 
-      // abscissas are the eigenValues
+         w[i][II] = m[0][II]*sqr(v[1][i]);
 
-      L[i][II] = mag(d[i]);
+             if(w[i][II] < 0)
+             {
+                w[i][II]=0.0;
+             }           
+         
+      // Abscissas (L) are the eigenValues
+      L[i][II] = fabs(d[i]);
+      
 
-
+  
 	} // end loop i
+    
+    
   } // end loop forALL
+
+
 
   return;
 }
+
+
 
 tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volScalarField& alpha) const
 {
@@ -615,23 +668,25 @@ tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volSc
 
   // partial result of Sauter diameter d32
     result = m[3]/(m[2]+SMALL)/1000.0;
+ //   result = m[4]/(m[3]+SMALL)/1000.0;
+
+
 
   forAll(result, cellI)
   {
-	  if(alpha[cellI] > ResidualAlphaForDsauter_.value())
+
+	 if(alpha[cellI] > residualAlpha_.value())
 	  {
-			//if (result[cellI] > 1.e-6 )
-			//{
+		
 				result[cellI] = max(dMin_.value(), min(result[cellI], dMax_.value()));
-			//}
+			
 	  }
 	  else
 	  {
 			   result[cellI] = dMin_.value();
 	  }
+
   }
-
-
 
   return tmp<volScalarField>
   (
@@ -645,13 +700,7 @@ tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volSc
 				IOobject::NO_READ,
 				IOobject::AUTO_WRITE
 			),
-			result//*
-		//	dimensionedScalar
-		//	(
-			//   "one",
-			//   dimLength,
-		//	   1.
-		//	)
+			result
 		)
   );
 
@@ -664,7 +713,7 @@ tmp<volScalarField> qmom::SauterDiameter(PtrList<volScalarField>& m, const volSc
 void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const volScalarField& alpha) const
 {
 
-	for(int j=0; j<=Nm_-1; j++)
+	for(int j=0; j<Nm_-1; j++)
    {
       forAll(S[j], II)
 		{
@@ -684,31 +733,10 @@ void qmom::adjust(PtrList<volScalarField>& S, PtrList<volScalarField>& L,const v
            }
     }
 
-/*
-	for(int i=1; i<=nodes_; i++)
-   {
-      forAll(L[i], I)
-		{
-///////////////////////////////////////////////////////////////
-/           if(alpha[I] > ResidualAlphaForDsauter_.value())
-            {
 
-
-                L[i][I] = max(dMin_.value(), min(L[i][I], dMax_.value()));
-
-            }
-            else
-            {
-                 L[i][I] = dMin_.value();
-            }
-
-///////////////////////////////////////////////////////////////
-
-		 }
-   }
-*/
 
 }
+
 
 
 // *******************************************************************************************************************************
@@ -718,8 +746,10 @@ void qmom::correct()
 {
   const fvMesh& mesh = alpha_.mesh();
 
- PtrList<volScalarField> source(Nm_);
+
+ PtrList<volScalarField> source(2*Nm_);
  PtrList<volScalarField> m(2*Nm_);
+ PtrList<volScalarField> mStar(2*Nm_);
  PtrList<volScalarField> w(2*nodes_);
  PtrList<volScalarField> L(2*nodes_);
 
@@ -738,10 +768,12 @@ void qmom::correct()
 
 
 
-  for(label j=0;j<=Nm_-1;j++)
+
+  for(label j=0;j<=Nm_;j++)
 	 {
 		 word sourceName = "Sb_" + Foam::name(j);
 		 word fName = "m_" + Foam::name(j);
+                 word fSName = "mStar_" + Foam::name(j);
 
 
 		 source.set
@@ -767,6 +799,22 @@ void qmom::correct()
 	         IOobject
 	         (
 				    fName,
+					 mesh.time().timeName(),
+					 mesh,
+					 IOobject::NO_READ,
+				         IOobject::AUTO_WRITE
+			   ),
+                m_ini
+	      )
+	    );
+
+		 mStar.set
+		 ( j,
+	      volScalarField
+	      (
+	         IOobject
+	         (
+				    fSName,
 					 mesh.time().timeName(),
 					 mesh,
 					 IOobject::NO_READ,
@@ -817,22 +865,7 @@ void qmom::correct()
  	    );
 
  	 }
-   m.set
-   ( 0,
-    volScalarField
-    (
-       IOobject
-       (
-        "m0",
 
-                   alpha_.time().timeName(),
-                   alpha_.db(),
-       IOobject::NO_READ,
-             IOobject::NO_WRITE
-     ),
-            m0
-    )
-   );
    m.set
    ( 0,
     volScalarField
@@ -929,6 +962,22 @@ void qmom::correct()
             m5
     )
    );
+   m.set
+   ( 6,
+    volScalarField
+    (
+       IOobject
+       (
+        "m6",
+
+                   alpha_.time().timeName(),
+                   alpha_.db(),
+       IOobject::NO_READ,
+             IOobject::NO_WRITE
+     ),
+            m6
+    )
+   );
 
 L.set
 ( 1,
@@ -1010,6 +1059,8 @@ w.set
          w2
  )
 );
+
+
 w.set
 ( 3,
  volScalarField
@@ -1027,12 +1078,13 @@ w.set
  )
 );
 
-//m[0]=m0;m[1]=m1;m[2]=m2;m[3]=m3;m[4]=m4;m[5]=m5;
-m[0]=m0_.value();m[1]=m1_.value();m[2]=m2_.value();m[3]=m3_.value();m[4]=m4_.value();m[5]=m5_.value();
+
+//m[0]=m0_.value();m[1]=m1_.value();m[2]=m2_.value();m[3]=m3_.value();m[4]=m4_.value();m[5]=m5_.value();m[6]=m6_.value();//sigmaNDF=sigmaNDF_.value();
+
+m[0]=m0;m[1]=m1;m[2]=m2;m[3]=m3;m[4]=m4;m[5]=m5;
 w[1]=w1;w[2]=w2;w[3]=w3;
 L[1]=L1;L[2]=L2;L[3]=L3;
-//w[1]=w1_.value();w[2]=w2_.value();w[3]=w3_.value();
-//L[1]=L1_.value();L[2]=L2_.value();L[3]=L3_.value();
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1050,99 +1102,98 @@ L[1]=L1;L[2]=L2;L[3]=L3;
 
 
 
-		qmom::adjust(source,L,alpha);
-
-  /*  Info << "L1" << average(L[1]) << endl;
-    Info << "L2" << average(L[2]) << endl;
-    Info << "L3" << average(L[3]) << endl;
-    Info << "w1" << average(w[1]) << endl;
-    Info << "w2" << average(w[2]) << endl;
-    Info << "w3" << average(w[3]) << endl;*/
+		 qmom::adjust(source,L,alpha);
 
 
- 		for(label i=0;i<=Nm_-1;i++)
+
+
+/************************************************************************************************************/
+
+ //               qmom::weightsAbscissas(w,L,m,alpha);
+
+ 		                    
+
+ 		
+                   for(label i=0;i<Nm_-1;i++)
+	
+
 		{
 			// update bubbles breakage/coalescence
 
-	  	 	qmom::coalescenceKernel(source,w,L,alpha,epsilon);
+
+                        qmom::adjust(source,L,alpha);
+
+	                qmom::coalescenceKernel(source,w,L,alpha,epsilon);
+           
 
 
 	  		qmom::breakupKernel(source,w,L,alpha);
 
 
-	  	volScalarField Sb = source[i]/
+
+	           	volScalarField Sb = source[i]/
 		                            populationBalanceModel_.breakupModel().rhoa();
 
 
+   
 
-	//		if(i != (Nm_-1)/2)
+			     word fScheme("div(phia,mi)"); //Vase inke pointerlist darim vase m[i] az een estafe kardim
 
-		//	{
+	
+			     fvScalarMatrix miEqn
+			     (
+
+				  fvm::ddt(m[i])
+				+ fvm::div(phia, m[i], fScheme)
+				- fvm::Sp(fvc::div(phia), m[i])
 
 
-     word fScheme("div(phia,mi)"); //Vase inke pointerlist darim vase m[i] az een estafe kardim
+			     );
 
+
+
+/*
 
      fvScalarMatrix miEqn
      (
 
-         fvm::ddt(alpha, m[i])
-        + fvm::div(fvc::flux(phia, alpha, fScheme), m[i], fScheme)
-        - fvm::Sp(fvc::div(phia), m[i])
+         fvm::ddt(m[i])
 
 
- /*       fvm::ddt(m[i])
-        + fvm::div(phia, m[i], fScheme)
-*/
 
      );
+*/				solve(miEqn == Sb);
+      
 
-				solve(miEqn == Sb);
-  //        miEqn.solve();
 
-
-	//		}
+	
 		}
 
 
 
-m[0]=mag(m[0]);
-m[1]=mag(m[1]);
-m[2]=mag(m[2]);
-m[3]=mag(m[3]);
-m[4]=mag(m[4]);
-m[5]=mag(m[5]);
-
-
-    qmom::weightsAbscissas(w,L,m,alpha);
-
-
-    m[0]=mag(m[0]);
-    m[1]=mag(m[1]);
-    m[2]=mag(m[2]);
-    m[3]=mag(m[3]);
-    m[4]=mag(m[4]);
-    m[5]=mag(m[5]);
-
-
-		qmom::adjust(source,L,alpha);
-
-    w[1]=mag(w[1])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
-    w[2]=mag(w[2])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
-    w[3]=mag(w[3])/(mag(w[1])+mag(w[2])+mag(w[3])+SMALL);
-
-
-  //  L[1]=0.012*mag(L[1])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
-   // L[2]=0.012*mag(L[2])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
-   // L[3]=0.012*mag(L[3])/(mag(L[1])+mag(L[2])+mag(L[3])+SMALL);
+	m[0]=mag(m[0]);
+	m[1]=mag(m[1]);
+	m[2]=mag(m[2]);
+	m[3]=mag(m[3]);
+	m[4]=mag(m[4]);
+	m[5]=mag(m[5]);
+	m[6]=mag(m[6]);
 
 
 
 
-	qmom::adjust(source,L,alpha);
+
+       qmom::weightsAbscissas(w,L,m,alpha);
 
 
 
+       qmom::adjust(source,L,alpha);
+
+ 
+    
+    
+  
+    
 
 	// update Sauter diameter d32, relax and correct BC
         dsauter = SauterDiameter(m,alpha);
@@ -1164,9 +1215,10 @@ m[5]=mag(m[5]);
         d32_.relax();
         d32_.correctBoundaryConditions();
 
-//m0=m[0];m1=m[1];m2=m[2];m3=m[3];m4=m[4];m5=m[5];
-w1=w[1];w2=w[2];w3=w[3];
-L1=L[1];L2=L[2];L3=L[3];
+	m0=m[0];m1=m[1];m2=m[2];m3=m[3];m4=m[4];m5=m[5];
+	w1=w[1];w2=w[2];w3=w[3];
+	L1=L[1];L2=L[2];L3=L[3];
+
 
 
 }

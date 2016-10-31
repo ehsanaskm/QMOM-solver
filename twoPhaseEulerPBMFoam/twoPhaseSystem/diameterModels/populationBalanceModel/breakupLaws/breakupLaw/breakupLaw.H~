@@ -148,14 +148,10 @@ public:
         }
 
         //- Calculate and return breakup rate
-/*       virtual dimensionedScalar breakupRate
+       virtual dimensionedScalar breakupRate
         (
-				volScalarField&, scalar&, scalar&
-			) const = 0;*/
-
-        virtual tmp<volScalarField> breakupRate
-                        (
-				volScalarField&, scalar&, scalar&
+			//	volScalarField&, scalar&, scalar&
+                              scalar&, scalar&, scalar&, scalar&
 			) const = 0;
 
 

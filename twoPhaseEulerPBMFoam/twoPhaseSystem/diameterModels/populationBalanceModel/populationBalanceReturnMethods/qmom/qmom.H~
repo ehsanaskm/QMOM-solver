@@ -22,27 +22,27 @@ License
     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    classMethod
+    qmom
 
 SourceFiles
-    classMethod.C
-    
-Description
-	 solve population balance equation  	
-    
-References
+    qmom.C
 
-    [1] 
-    [2] 
-     
+Description
+	 solve population balance equation by QMOM
+
+Reference:
+
+    Daniele L. Marchisio et al. "Quadrature method of moents for aggregation-breakage processes",
+			                         Journal of Colloid and Interface Science, Vol. 258, pp 322-334 (2003)
+
 Author
     Ehsan Askari
 	 Sep. 2016
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef classMethod_H
-#define classMethod_H
+#ifndef qmom_H
+#define qmom_H
 
 #include "populationBalanceReturn.H"
 #include "breakupLaw.H"
@@ -57,108 +57,130 @@ namespace Foam
 
   class populationBalanceModel;
 
-/*---------------------------------------------------------------------------*\                                                                                         
-                         Class classMethod Declaration
+/*---------------------------------------------------------------------------*\
+                         Class qmom Declaration
 \*---------------------------------------------------------------------------*/
 
-class classMethod
+class qmom
 :
     public populationBalanceReturn
 {
     // Private data
 
-			
+
 			// Reference to populationBalance model
 			populationBalanceModel& populationBalanceModel_;
 
-			// volume fraction 
+			// volume fraction
 			volScalarField alpha_;
 
 			//- Menétrey-willam dictionary to define all constant
 			dictionary dict_;
-			
+
 			// Sauter diameter d32
-			volScalarField d32_;
+			 volScalarField d32_;
 
 
-            
+
                        volScalarField dsauter;
-                        
-		  
-			//- mean diameter
-			dimensionedScalar dm_;
+
 
 
                        // correction parameters
-                       dimensionedScalar ResidualAlphaForDsauter_;
-                       dimensionedScalar ResidualAlphaForAdjust_;
-                       dimensionedScalar ResidualAlphaForCorrect_;
+                       dimensionedScalar residualAlpha_;
 
-			//- number of classes  (is a label not scalar!!)
-			label Nc_;
-    
+
+		       dimensionedScalar m0_;
+		       dimensionedScalar m1_;
+		       dimensionedScalar m2_;
+		       dimensionedScalar m3_;
+		       dimensionedScalar m4_;
+		       dimensionedScalar m5_;
+		       dimensionedScalar m6_;
+
+
+                        //- number of moments  (is a label not scalar!!)
+			label Nm_;
+
+                        //- number of nodes  (is a label not scalar!!)
+      			label nodes_;
+
 			//- coalescence: initial thickness
 			dimensionedScalar h0_;
-   
-			//- coalescence: rupture thickness  	
+
+			//- coalescence: rupture thickness
 			dimensionedScalar hf_;
-    
+
 			//-
 			dimensionedScalar beta1_;
-   
+
 			//-
 			dimensionedScalar beta2_;
-   
+
 			//-
 			dimensionedScalar betaPB_;
-   
+
 			//-
 			dimensionedScalar k1_;
-     
-			//- surface tension 
+
+			//- surface tension
 			dimensionedScalar sigma_;
-      
+
 			//- breakup coefficient
 			dimensionedScalar breakCoeff_;
-  
+
 			//- coalescence coefficient
 			dimensionedScalar coalCoeff_;
-     
-			//- Ramkrishna model paramter: equivalent to V(i+1) = S*V(i) for geometric evolution 
-			dimensionedScalar S_;
-			
+
+
 			//-
 			dimensionedScalar dMin_;
 			dimensionedScalar dMax_;
-			
+
 			//- Max of iterations
-			label maxIters_; 
-			
+			label maxIters_;
+
 			//- tolerance
 			scalar loopTolerance_;
 
-            //           PtrList<volScalarField> f;
+		   
+		        volScalarField m0;
+		        volScalarField m1;
+		        volScalarField m2;
+		        volScalarField m3;
+		        volScalarField m4;
+		        volScalarField m5;
+		  	volScalarField m6;
+		        volScalarField w1;
+		        volScalarField w2;
+		        volScalarField w3;
+		        volScalarField L1;
+		        volScalarField L2;
+		        volScalarField L3;
 
 
-                  
-                      			
+
 			//- class method selector
-			//word populationBalanceMethodName_; 
+			//word populationBalanceMethodName_;
 
     // Private Member Functions
 
         //- Disallow default bitwise copy construct
-        classMethod(const classMethod&);
+        qmom(const qmom&);
 
         //- Disallow default bitwise assignment
-        void operator=(const classMethod&);
+        void operator=(const qmom&);
+
+
+
+
 
 public:
-   
 
-     
+
+
     //- Runtime type information
-    TypeName("classMethod");
+    TypeName("qmom");
 
     // Static data members
 
@@ -166,7 +188,7 @@ public:
     // Constructors
 
         //- Construct from dictionary
-        classMethod
+        qmom
         (
             const word& name,
             populationBalanceModel& populationBalanceModel
@@ -175,60 +197,72 @@ public:
 
     // Destructor
 
-        virtual ~classMethod();
+        virtual ~qmom();
 
 
-     
+
 
 
     // Member Functions
-/////////////////////////////////////////////////////////////////////
-    //    virtual tmp<volScalarField> dSauter() const;
-//////////////////////////////////////////////////////////////////////        
+
 
         //- Correct the rheological model
         virtual void correct();
 
-		  scalar funcTest(scalar&, scalar&, scalar&) const;
-	
-		  scalar kronecker(label&, label&) const;   
-	
+
+
 		  //------------------------------ bubbles breakup kernel -----------------------//
 		  virtual void breakupKernel
-		  ( 
-				PtrList<volScalarField>&, 
+		  (
+				PtrList<volScalarField>&,
+                                PtrList<volScalarField>&,
 				PtrList<volScalarField>&,
 				const volScalarField&
-		  ) const;  
-		  
+		  ) const;
+
 		  //------------------------------ bubbles coalescence kernel -------------------//
 		  virtual void coalescenceKernel
-		  ( 
-				PtrList<volScalarField>&, 
+		  (
 				PtrList<volScalarField>&,
+				PtrList<volScalarField>&,
+        PtrList<volScalarField>&,
 				const volScalarField&,
 				const volScalarField&
 		  ) const;
-		  	
+
+
+
+        //------------------------------ PD algorithm -------------------//
+        virtual void weightsAbscissas
+        (
+          PtrList<volScalarField>&,
+          PtrList<volScalarField>&,
+          PtrList<volScalarField>&,
+          const volScalarField
+        ) const;
+
+
 	     //------------------------------ Sauter diameter function ---------------------//
 	     tmp<volScalarField> SauterDiameter(PtrList<volScalarField>&, const volScalarField&) const ;
-           
-                 
-	    
-	     //--- 
+
+               
+	     
+
+
+	     //---
 	     void adjust
 			(
-				PtrList<volScalarField>&, 
-				PtrList<volScalarField>&, 
+				PtrList<volScalarField>&,
+        PtrList<volScalarField>&,
 				const volScalarField&
 			)
-			const; 
+			const;
 
-	    
+
         //- Return slave friction value fraction
         virtual void updateSauterDiameter();
 
-        
+
         //- Write law dictionary
         virtual void writeDict(Ostream& os) const {};
 };

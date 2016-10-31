@@ -22,13 +22,17 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::diameterModels::isothermal
+    Foam::diameterModels::PBM
 
 Description
-    Isothermal dispersed-phase particle diameter model.
+   Coupling Population Balance Library to twoPhaseEulerFoam
 
 SourceFiles
-    isothermal.C
+    PBM.C
+
+
+Author   Ehsan Askari, ehsan.askari@usherbrooke.ca  
+	 
 
 \*---------------------------------------------------------------------------*/
 

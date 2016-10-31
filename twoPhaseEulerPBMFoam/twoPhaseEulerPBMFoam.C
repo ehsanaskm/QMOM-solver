@@ -76,13 +76,12 @@ int main(int argc, char *argv[])
         #include "setDeltaT.H"
 
         
-        Info<< "Time = " << runTime.timeName() << nl << endl;
        
         
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-
+Info<< "Time = " << runTime.timeName() << nl << endl;
             fluid.solve();
             rho = fluid.rho();
             fluid.correct();
@@ -120,7 +119,9 @@ int main(int argc, char *argv[])
             << runTime.elapsedCpuTime()
             << " s\n\n" << endl;
            
-        runTime++;    
+        runTime++; 
+      
+  
     }
 
     Info<< "End\n" << endl;

@@ -1,0 +1,736 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : 2.3.0-f5222ca19ce6
+Exec   : twoPhaseEulerPBMFoam
+Date   : Oct 20 2016
+Time   : 12:24:32
+Host   : "UdeS"
+PID    : 7097
+Case   : /home/ehsan/Desktop/EQMOM/case
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster
+allowSystemOperations : Disallowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+
+Reading g
+Creating twoPhaseSystem
+
+Selecting thermodynamics package 
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState perfectGas;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+Calculating face flux field phi.air
+Selecting diameterModel for phase air: PBMmethod
+Selecting turbulence model type laminar
+Selecting thermodynamics package 
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState perfectFluid;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+Calculating face flux field phi.water
+Selecting diameterModel for phase water: constant
+Selecting turbulence model type RAS
+Selecting RAS turbulence model kEpsilon
+kEpsilonCoeffs
+{
+    Cmu             0.09;
+    C1              1.44;
+    C2              1.92;
+    C3              1.92;
+    Cp              0.25;
+    sigmak          1;
+    sigmaEps        1.3;
+}
+
+Selecting default blending method: none
+Selecting aspectRatioModel for (air in water): constant
+Selecting aspectRatioModel for (water in air): constant
+Selecting dragModel for (air and water): segregated
+Selecting swarmCorrection for (air and water): none
+Selecting dragModel for (air in water): SchillerNaumann
+Selecting swarmCorrection for (air in water): none
+Selecting dragModel for (water in air): SchillerNaumann
+Selecting swarmCorrection for (water in air): none
+Selecting virtualMassModel for (air in water): constantCoefficient
+Selecting virtualMassModel for (water in air): constantCoefficient
+Selecting heatTransferModel for (air in water): RanzMarshall
+Selecting heatTransferModel for (water in air): RanzMarshall
+Creating field kinetic energy k
+
+Creating field dissipation of kinetic energy epsilon
+
+Selecting breakup model name LuoAndSvendsen
+Selecting coalescence model name LuoAndSvendsen
+Creating population balance methods
+	Population balance return method: qmom
+Selecting method for population balance model
+Calculating field DDtU1 and DDtU2
+
+Creating field dpdt
+
+Creating field kinetic energy K
+
+No MRF models present
+
+Courant Number mean: 3.15e-06 max: 0.0278874
+Max Ur Courant Number = 0.0278874
+
+PIMPLE: Operating solver in PISO mode
+
+
+Starting time loop
+
+fieldAverage fieldAverage1:
+    Starting averaging at time 0
+
+Courant Number mean: 3.15e-06 max: 0.0278874
+Max Ur Courant Number = 0.0278874
+Time = 0
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 1e-05  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 1, Final residual = 0.00685883, No Iterations 9
+GAMG:  Solving for p, Initial residual = 1.43816e-05, Final residual = 5.49069e-09, No Iterations 9
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0373184, Final residual = 2.03451e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 1, Final residual = 7.52102e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 8.81853e-14, No Iterations 2
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 3.25937e-13, No Iterations 2
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 4.51957e-14, No Iterations 2
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 1.38482e-14, No Iterations 2
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 1.19067e-14, No Iterations 2
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 7.86763e-15, No Iterations 2
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 2.21236e-14, No Iterations 2
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 89.2999
+m2average(m2) [0 0 0 0 0 0 0] 143.735
+m3average(m3) [0 0 0 0 0 0 0] 247.518
+m4average(m4) [0 0 0 0 0 0 0] 630.369
+m5average(m5) [0 0 0 0 0 0 0] 2928.02
+m6average(m6) [0 0 0 0 0 0 0] 18364.6
+L1average(L1) [0 0 0 0 0 0 0] 4.39895
+L2average(L2) [0 0 0 0 0 0 0] 3.26468
+L3average(L3) [0 0 0 0 0 0 0] 7.5947
+w1average(w1) [0 0 0 0 0 0 0] 0.378957
+w2average(w2) [0 0 0 0 0 0 0] 0.612345
+w3average(w3) [0 0 0 0 0 0 0] 0.306126
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 89.2999
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 143.735
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 247.518
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 630.369
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 2928.02
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 532283
+L1average(L1) [0 0 0 0 0 0 0] 4.39895
+L2average(L2) [0 0 0 0 0 0 0] 3.26468
+L3average(L3) [0 0 0 0 0 0 0] 7.5947
+w1average(w1) [0 0 0 0 0 0 0] 0.0700886
+w2average(w2) [0 0 0 0 0 0 0] 0.445928
+w3average(w3) [0 0 0 0 0 0 0] 0.483983
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 1.23795/3.83813/5.42149mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.2 s
+
+
+fieldAverage fieldAverage1:
+    Reading/initialising field U.airMean
+    Reading/initialising field U.waterMean
+    Reading/initialising field alpha.airMean
+    Reading/initialising field dsauterMean
+    Reading/initialising field pMean
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000895111 max: 0.0557724
+Max Ur Courant Number = 0.0555451
+Time = 0.005
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 9.80873e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 5.71564e-05, Final residual = 3.71578e-07, No Iterations 6
+GAMG:  Solving for p, Initial residual = 1.24344e-05, Final residual = 7.36007e-09, No Iterations 7
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0354554, Final residual = 1.12354e-08, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.271816, Final residual = 1.45037e-11, No Iterations 2
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 1.54768e-14, No Iterations 3
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 1.76796e-13, No Iterations 3
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 1.33387e-13, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 6.831e-11, No Iterations 2
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 1.04599e-11, No Iterations 2
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 2.47203e-12, No Iterations 2
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 6.18821e-13, No Iterations 3
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 103.987
+m2average(m2) [0 0 0 0 0 0 0] 163.694
+m3average(m3) [0 0 0 0 0 0 0] 224.256
+m4average(m4) [0 0 0 0 0 0 0] 575.37
+m5average(m5) [0 0 0 0 0 0 0] 4372.69
+m6average(m6) [0 0 0 0 0 0 0] 30005.7
+L1average(L1) [0 0 0 0 0 0 0] 4.55761
+L2average(L2) [0 0 0 0 0 0 0] 6.23047
+L3average(L3) [0 0 0 0 0 0 0] 7.5027
+w1average(w1) [0 0 0 0 0 0 0] 0.345663
+w2average(w2) [0 0 0 0 0 0 0] 0.64495
+w3average(w3) [0 0 0 0 0 0 0] 0.302282
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 103.987
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 163.694
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 224.256
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 575.37
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 4372.69
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 512974
+L1average(L1) [0 0 0 0 0 0 0] 4.55761
+L2average(L2) [0 0 0 0 0 0 0] 6.23047
+L3average(L3) [0 0 0 0 0 0 0] 7.5027
+w1average(w1) [0 0 0 0 0 0 0] 0.0669542
+w2average(w2) [0 0 0 0 0 0 0] 0.456399
+w3average(w3) [0 0 0 0 0 0 0] 0.476646
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.75415/7.12088mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.34 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000419541 max: 0.055775
+Max Ur Courant Number = 0.0764501
+Time = 0.01
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 9.7127e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 3.43122e-05, Final residual = 2.15012e-07, No Iterations 5
+GAMG:  Solving for p, Initial residual = 3.28596e-06, Final residual = 8.91067e-09, No Iterations 5
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0338003, Final residual = 9.80152e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.150876, Final residual = 4.89819e-12, No Iterations 2
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 9.24071e-13, No Iterations 3
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 1.69827e-12, No Iterations 3
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 1.93552e-13, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 3.21078e-13, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 5.51536e-14, No Iterations 3
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 7.9759e-11, No Iterations 2
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 4.5457e-15, No Iterations 3
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 977.553
+m2average(m2) [0 0 0 0 0 0 0] 1584.03
+m3average(m3) [0 0 0 0 0 0 0] 1611.9
+m4average(m4) [0 0 0 0 0 0 0] 995.7
+m5average(m5) [0 0 0 0 0 0 0] 207280
+m6average(m6) [0 0 0 0 0 0 0] 128907
+L1average(L1) [0 0 0 0 0 0 0] 4.4351
+L2average(L2) [0 0 0 0 0 0 0] 5.68478
+L3average(L3) [0 0 0 0 0 0 0] 7.21616
+w1average(w1) [0 0 0 0 0 0 0] 0.279166
+w2average(w2) [0 0 0 0 0 0 0] 0.708768
+w3average(w3) [0 0 0 0 0 0 0] 0.293393
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 977.553
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 1584.03
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 1611.9
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 995.7
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 207280
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 419930
+L1average(L1) [0 0 0 0 0 0 0] 4.4351
+L2average(L2) [0 0 0 0 0 0 0] 5.68478
+L3average(L3) [0 0 0 0 0 0 0] 7.21616
+w1average(w1) [0 0 0 0 0 0 0] 0.0604775
+w2average(w2) [0 0 0 0 0 0 0] 0.482258
+w3average(w3) [0 0 0 0 0 0 0] 0.457264
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.76567/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.46 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000748844 max: 0.0557802
+Max Ur Courant Number = 0.0867503
+Time = 0.015
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 9.52026e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.68492e-05, Final residual = 2.53271e-07, No Iterations 5
+GAMG:  Solving for p, Initial residual = 4.80439e-06, Final residual = 6.90996e-09, No Iterations 6
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0322597, Final residual = 8.90018e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.102126, Final residual = 9.98274e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 6.03491e-14, No Iterations 3
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 9.7006e-14, No Iterations 3
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 2.26548e-13, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 6.82164e-11, No Iterations 2
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 2.09458e-11, No Iterations 2
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 2.77049e-13, No Iterations 2
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 4.19093e-13, No Iterations 2
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 123.526
+m2average(m2) [0 0 0 0 0 0 0] 189.374
+m3average(m3) [0 0 0 0 0 0 0] 270.669
+m4average(m4) [0 0 0 0 0 0 0] 560.962
+m5average(m5) [0 0 0 0 0 0 0] 4263.75
+m6average(m6) [0 0 0 0 0 0 0] 25535.4
+L1average(L1) [0 0 0 0 0 0 0] 4.14936
+L2average(L2) [0 0 0 0 0 0 0] 5.0098
+L3average(L3) [0 0 0 0 0 0 0] 6.80889
+w1average(w1) [0 0 0 0 0 0 0] 0.216761
+w2average(w2) [0 0 0 0 0 0 0] 0.769518
+w3average(w3) [0 0 0 0 0 0 0] 0.277391
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 123.526
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 189.374
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 270.669
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 560.962
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 4263.75
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 316247
+L1average(L1) [0 0 0 0 0 0 0] 4.14936
+L2average(L2) [0 0 0 0 0 0 0] 5.0098
+L3average(L3) [0 0 0 0 0 0 0] 6.80889
+w1average(w1) [0 0 0 0 0 0 0] 0.0574831
+w2average(w2) [0 0 0 0 0 0 0] 0.51984
+w3average(w3) [0 0 0 0 0 0 0] 0.422677
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.254272/3.75587/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.6 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000787741 max: 0.055778
+Max Ur Courant Number = 0.0983358
+Time = 0.02
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 9.42921e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.41608e-05, Final residual = 1.94868e-07, No Iterations 4
+GAMG:  Solving for p, Initial residual = 3.75836e-06, Final residual = 8.14602e-09, No Iterations 6
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0308171, Final residual = 8.26473e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.0758567, Final residual = 7.37656e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 1.31033e-12, No Iterations 2
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 1.95467e-12, No Iterations 2
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 3.37706e-12, No Iterations 2
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 4.16533e-19, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 2.18777e-11, No Iterations 2
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 3.75141e-12, No Iterations 2
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 3.94192e-12, No Iterations 2
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 29.8685
+m2average(m2) [0 0 0 0 0 0 0] 62.0437
+m3average(m3) [0 0 0 0 0 0 0] 131.398
+m4average(m4) [0 0 0 0 0 0 0] 509.298
+m5average(m5) [0 0 0 0 0 0 0] 3222.34
+m6average(m6) [0 0 0 0 0 0 0] 19267.1
+L1average(L1) [0 0 0 0 0 0 0] 3.82958
+L2average(L2) [0 0 0 0 0 0 0] 4.48691
+L3average(L3) [0 0 0 0 0 0 0] 6.54583
+w1average(w1) [0 0 0 0 0 0 0] 0.178448
+w2average(w2) [0 0 0 0 0 0 0] 0.806705
+w3average(w3) [0 0 0 0 0 0 0] 0.265849
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 29.8685
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 62.0437
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 131.398
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 509.298
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 3222.34
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 236024
+L1average(L1) [0 0 0 0 0 0 0] 3.82958
+L2average(L2) [0 0 0 0 0 0 0] 4.48691
+L3average(L3) [0 0 0 0 0 0 0] 6.54583
+w1average(w1) [0 0 0 0 0 0 0] 0.0554302
+w2average(w2) [0 0 0 0 0 0 0] 0.545196
+w3average(w3) [0 0 0 0 0 0 0] 0.399373
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.122433/3.76052/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.73 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000732918 max: 0.0557763
+Max Ur Courant Number = 0.109455
+Time = 0.025
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 9.22767e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.51306e-05, Final residual = 1.75443e-07, No Iterations 3
+GAMG:  Solving for p, Initial residual = 3.24581e-06, Final residual = 6.43642e-09, No Iterations 5
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0294531, Final residual = 7.65818e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.0595294, Final residual = 5.79798e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 1.65189e-11, No Iterations 2
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 9.52358e-12, No Iterations 2
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 2.33764e-11, No Iterations 2
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 2.84297e-18, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 2.07402e-11, No Iterations 2
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 2.67816e-11, No Iterations 2
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 2.94018e-11, No Iterations 2
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 10.5357
+m2average(m2) [0 0 0 0 0 0 0] 26.8959
+m3average(m3) [0 0 0 0 0 0 0] 98.5367
+m4average(m4) [0 0 0 0 0 0 0] 495.491
+m5average(m5) [0 0 0 0 0 0 0] 2894.19
+m6average(m6) [0 0 0 0 0 0 0] 17104.7
+L1average(L1) [0 0 0 0 0 0 0] 3.50508
+L2average(L2) [0 0 0 0 0 0 0] 3.97923
+L3average(L3) [0 0 0 0 0 0 0] 6.31317
+w1average(w1) [0 0 0 0 0 0 0] 0.145178
+w2average(w2) [0 0 0 0 0 0 0] 0.83817
+w3average(w3) [0 0 0 0 0 0 0] 0.252022
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 10.5357
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 26.8959
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 98.5367
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 495.491
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 2894.19
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 157129
+L1average(L1) [0 0 0 0 0 0 0] 3.50508
+L2average(L2) [0 0 0 0 0 0 0] 3.97923
+L3average(L3) [0 0 0 0 0 0 0] 6.31317
+w1average(w1) [0 0 0 0 0 0 0] 0.0563441
+w2average(w2) [0 0 0 0 0 0 0] 0.571803
+w3average(w3) [0 0 0 0 0 0 0] 0.371853
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.76642/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.86 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000714546 max: 0.0557762
+Max Ur Courant Number = 0.118027
+Time = 0.03
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 9.13774e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.11666e-05, Final residual = 1.84854e-07, No Iterations 3
+GAMG:  Solving for p, Initial residual = 2.62497e-06, Final residual = 8.0634e-09, No Iterations 4
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.028148, Final residual = 6.93774e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.0484356, Final residual = 4.75399e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 2.61474e-11, No Iterations 2
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 3.18689e-11, No Iterations 2
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 7.34248e-16, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 1.05948e-16, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 4.41238e-15, No Iterations 3
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 7.10556e-16, No Iterations 3
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 7.11988e-16, No Iterations 3
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 14.7817
+m2average(m2) [0 0 0 0 0 0 0] 40.5613
+m3average(m3) [0 0 0 0 0 0 0] 112.436
+m4average(m4) [0 0 0 0 0 0 0] 494.632
+m5average(m5) [0 0 0 0 0 0 0] 2873.15
+m6average(m6) [0 0 0 0 0 0 0] 18168.5
+L1average(L1) [0 0 0 0 0 0 0] 3.27891
+L2average(L2) [0 0 0 0 0 0 0] 3.74828
+L3average(L3) [0 0 0 0 0 0 0] 6.23543
+w1average(w1) [0 0 0 0 0 0 0] 0.143164
+w2average(w2) [0 0 0 0 0 0 0] 0.838765
+w3average(w3) [0 0 0 0 0 0 0] 0.245638
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 14.7817
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 40.5613
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 112.436
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 494.632
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 2873.15
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 132195
+L1average(L1) [0 0 0 0 0 0 0] 3.27891
+L2average(L2) [0 0 0 0 0 0 0] 3.74828
+L3average(L3) [0 0 0 0 0 0 0] 6.23543
+w1average(w1) [0 0 0 0 0 0 0] 0.0591482
+w2average(w2) [0 0 0 0 0 0 0] 0.582202
+w3average(w3) [0 0 0 0 0 0 0] 0.35865
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.77466/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 0.98 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000729902 max: 0.0557782
+Max Ur Courant Number = 0.124046
+Time = 0.035
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 8.9425e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.29062e-05, Final residual = 1.80484e-07, No Iterations 2
+GAMG:  Solving for p, Initial residual = 2.44729e-06, Final residual = 6.77604e-09, No Iterations 5
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0269491, Final residual = 6.32949e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.0404403, Final residual = 3.9861e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 1.47362e-14, No Iterations 3
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 2.74657e-18, No Iterations 3
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 1.01043e-13, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 2.32137e-14, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 3.0025e-14, No Iterations 3
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 5.60763e-14, No Iterations 3
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 5.76727e-14, No Iterations 3
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 7.12618
+m2average(m2) [0 0 0 0 0 0 0] 22.0461
+m3average(m3) [0 0 0 0 0 0 0] 94.2802
+m4average(m4) [0 0 0 0 0 0 0] 492.868
+m5average(m5) [0 0 0 0 0 0 0] 2827.85
+m6average(m6) [0 0 0 0 0 0 0] 16670.5
+L1average(L1) [0 0 0 0 0 0 0] 3.1597
+L2average(L2) [0 0 0 0 0 0 0] 3.57689
+L3average(L3) [0 0 0 0 0 0 0] 6.18013
+w1average(w1) [0 0 0 0 0 0 0] 0.138303
+w2average(w2) [0 0 0 0 0 0 0] 0.84275
+w3average(w3) [0 0 0 0 0 0 0] 0.24021
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 7.12618
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 22.0461
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 94.2802
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 492.868
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 2827.85
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 107793
+L1average(L1) [0 0 0 0 0 0 0] 3.1597
+L2average(L2) [0 0 0 0 0 0 0] 3.57689
+L3average(L3) [0 0 0 0 0 0 0] 6.18013
+w1average(w1) [0 0 0 0 0 0 0] 0.0629158
+w2average(w2) [0 0 0 0 0 0 0] 0.589258
+w3average(w3) [0 0 0 0 0 0 0] 0.347826
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.7895/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 1.12 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000751304 max: 0.0557786
+Max Ur Courant Number = 0.130084
+Time = 0.04
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 8.84973e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.28061e-05, Final residual = 1.38091e-07, No Iterations 2
+GAMG:  Solving for p, Initial residual = 2.40149e-06, Final residual = 7.67493e-09, No Iterations 4
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.0259832, Final residual = 7.21235e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.0344784, Final residual = 3.44457e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 2.1536e-15, No Iterations 3
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 1.22538e-18, No Iterations 3
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 3.45524e-14, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 2.29419e-15, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 3.06581e-13, No Iterations 3
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 9.12901e-15, No Iterations 3
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 8.89928e-15, No Iterations 3
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 6.26345
+m2average(m2) [0 0 0 0 0 0 0] 20.8116
+m3average(m3) [0 0 0 0 0 0 0] 92.6801
+m4average(m4) [0 0 0 0 0 0 0] 492.361
+m5average(m5) [0 0 0 0 0 0 0] 2812.48
+m6average(m6) [0 0 0 0 0 0 0] 16562.2
+L1average(L1) [0 0 0 0 0 0 0] 3.13716
+L2average(L2) [0 0 0 0 0 0 0] 3.50912
+L3average(L3) [0 0 0 0 0 0 0] 6.16264
+w1average(w1) [0 0 0 0 0 0 0] 0.149511
+w2average(w2) [0 0 0 0 0 0 0] 0.832959
+w3average(w3) [0 0 0 0 0 0 0] 0.239112
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 6.26345
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 20.8116
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 92.6801
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 492.361
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 2812.48
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 102810
+L1average(L1) [0 0 0 0 0 0 0] 3.13716
+L2average(L2) [0 0 0 0 0 0 0] 3.50912
+L3average(L3) [0 0 0 0 0 0 0] 6.16264
+w1average(w1) [0 0 0 0 0 0 0] 0.0677103
+w2average(w2) [0 0 0 0 0 0 0] 0.585602
+w3average(w3) [0 0 0 0 0 0 0] 0.346688
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.79066/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 1.25 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.00076876 max: 0.0557789
+Max Ur Courant Number = 0.132592
+Time = 0.045
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 8.6809e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.24713e-05, Final residual = 1.432e-07, No Iterations 2
+GAMG:  Solving for p, Initial residual = 2.38949e-06, Final residual = 7.08699e-09, No Iterations 3
+smoothSolver:  Solving for epsilon.water, Initial residual = 0.025132, Final residual = 8.2659e-09, No Iterations 1
+smoothSolver:  Solving for k.water, Initial residual = 0.0299076, Final residual = 3.02038e-08, No Iterations 1
+DILUPBiCG:  Solving for m0, Initial residual = 1, Final residual = 1.78028e-15, No Iterations 3
+DILUPBiCG:  Solving for m1, Initial residual = 1, Final residual = 6.74336e-19, No Iterations 3
+DILUPBiCG:  Solving for m2, Initial residual = 1, Final residual = 1.23098e-14, No Iterations 3
+DILUPBiCG:  Solving for m3, Initial residual = 1, Final residual = 5.53871e-16, No Iterations 3
+DILUPBiCG:  Solving for m4, Initial residual = 1, Final residual = 1.36432e-14, No Iterations 3
+DILUPBiCG:  Solving for m5, Initial residual = 1, Final residual = 3.76688e-15, No Iterations 3
+DILUPBiCG:  Solving for m6, Initial residual = 1, Final residual = 4.06197e-15, No Iterations 3
+m0average(m0) [0 0 0 0 0 0 0] 1
+m1average(m1) [0 0 0 0 0 0 0] 7.52727
+m2average(m2) [0 0 0 0 0 0 0] 22.0308
+m3average(m3) [0 0 0 0 0 0 0] 95.1016
+m4average(m4) [0 0 0 0 0 0 0] 493.9
+m5average(m5) [0 0 0 0 0 0 0] 2805.84
+m6average(m6) [0 0 0 0 0 0 0] 16545.2
+L1average(L1) [0 0 0 0 0 0 0] 3.22591
+L2average(L2) [0 0 0 0 0 0 0] 3.50354
+L3average(L3) [0 0 0 0 0 0 0] 6.12202
+w1average(w1) [0 0 0 0 0 0 0] 0.145044
+w2average(w2) [0 0 0 0 0 0 0] 0.836276
+w3average(w3) [0 0 0 0 0 0 0] 0.239975
+mStar0average(mStar_0) [0 0 0 0 0 0 0] 1
+mStar1average(mStar_1) [0 0 0 0 0 0 0] 7.52727
+mStar2average(mStar_2) [0 0 0 0 0 0 0] 22.0308
+mStar3average(mStar_3) [0 0 0 0 0 0 0] 95.1016
+mStar4average(mStar_4) [0 0 0 0 0 0 0] 493.9
+mStar5average(mStar_5) [0 0 0 0 0 0 0] 2805.84
+mStar6average(mStar_6) [0 0 0 0 0 0 0] 99076.6
+L1average(L1) [0 0 0 0 0 0 0] 3.22591
+L2average(L2) [0 0 0 0 0 0 0] 3.50354
+L3average(L3) [0 0 0 0 0 0 0] 6.12202
+w1average(w1) [0 0 0 0 0 0 0] 0.0650707
+w2average(w2) [0 0 0 0 0 0 0] 0.58743
+w3average(w3) [0 0 0 0 0 0 0] 0.347499
+
+ *********************************************************************** 
+
+           Updating Sauter diameter d32 by using qmom
+
+           min/avg/max d32: 0.1/3.79554/10mm.
+
+ *********************************************************************** 
+ 
+ExecutionTime = 1.38 s
+
+
+fieldAverage fieldAverage1 output:
+    Calculating averages
+
+Courant Number mean: 0.000783285 max: 0.0569028
+Max Ur Courant Number = 0.136137
+Time = 0.05
+
+MULES: Solving for alpha.air
+MULES: Solving for alpha.air
+alpha.air volume fraction = 0.624998  Min(alpha1) = 8.56466e-06  Max(alpha1) = 1
+smoothSolver:  Solving for h.air, Initial residual = 1, Final residual = 1, No Iterations 0
+smoothSolver:  Solving for h.water, Initial residual = 1, Final residual = 1, No Iterations 0
+GAMG:  Solving for p, Initial residual = 2.26985e-05, Final residual = 1.05536e-07, No Iterations 2

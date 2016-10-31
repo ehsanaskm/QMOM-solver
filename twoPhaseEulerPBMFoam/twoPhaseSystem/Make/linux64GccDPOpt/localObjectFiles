@@ -14,13 +14,14 @@ populationBalanceModel.o\
 populationBalanceReturn.o\
 newpopulationBalanceReturn.o\
 incompleteGammaFunction.o\
-PDAlgorithm.o\
 breakupLaw.o\
 newbreakupModels.o\
 LuoAndSvendsenBreak.o\
+ConstantBreak.o\
 coalescenceLaw.o\
 newcoalescenceModels.o\
 LuoAndSvendsenCoal.o\
+Constant.o\
 classMethod.o\
 qmom.o\
 blendingMethod.o\

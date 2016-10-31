@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
         #include "setDeltaT.H"
 
         
-        Info<< "Time = " << runTime.timeName() << nl << endl;
        
         
         // --- Pressure-velocity PIMPLE corrector loop
@@ -87,7 +86,7 @@ int main(int argc, char *argv[])
             rho = fluid.rho();
             fluid.correct();
 		
-          //  #include "EEqns.H"
+            #include "EEqns.H"
 
             #include "UEqns.H"
 
@@ -120,7 +119,9 @@ int main(int argc, char *argv[])
             << runTime.elapsedCpuTime()
             << " s\n\n" << endl;
            
-        runTime++;    
+        runTime++; 
+      
+  
     }
 
     Info<< "End\n" << endl;

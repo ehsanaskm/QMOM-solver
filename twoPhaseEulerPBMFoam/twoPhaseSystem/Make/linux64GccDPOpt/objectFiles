@@ -14,13 +14,14 @@ $(OBJECTS_DIR)/populationBalanceModel.o\
 $(OBJECTS_DIR)/populationBalanceReturn.o\
 $(OBJECTS_DIR)/newpopulationBalanceReturn.o\
 $(OBJECTS_DIR)/incompleteGammaFunction.o\
-$(OBJECTS_DIR)/PDAlgorithm.o\
 $(OBJECTS_DIR)/breakupLaw.o\
 $(OBJECTS_DIR)/newbreakupModels.o\
 $(OBJECTS_DIR)/LuoAndSvendsenBreak.o\
+$(OBJECTS_DIR)/ConstantBreak.o\
 $(OBJECTS_DIR)/coalescenceLaw.o\
 $(OBJECTS_DIR)/newcoalescenceModels.o\
 $(OBJECTS_DIR)/LuoAndSvendsenCoal.o\
+$(OBJECTS_DIR)/Constant.o\
 $(OBJECTS_DIR)/classMethod.o\
 $(OBJECTS_DIR)/qmom.o\
 $(OBJECTS_DIR)/blendingMethod.o\

@@ -28,15 +28,16 @@ SourceFiles
     qmom.C
 
 Description
-	 solve population balance equation
+	 solve population balance equation by QMOM
 
-References
+Reference:
 
-    [1]
-    [2]
+    Daniele L. Marchisio et al. "Quadrature method of moents for aggregation-breakage processes",
+			                         Journal of Colloid and Interface Science, Vol. 258, pp 322-334 (2003)
 
 Author
     Ehsan Askari
+    ehsan.askari@usherbrooke.ca
 	 Sep. 2016
 
 \*---------------------------------------------------------------------------*/
@@ -78,42 +79,31 @@ class qmom
 			dictionary dict_;
 
 			// Sauter diameter d32
-			volScalarField d32_;
+			 volScalarField d32_;
 
 
 
                        volScalarField dsauter;
 
 
-			//- mean diameter
-			dimensionedScalar dm_;
-
 
                        // correction parameters
-                       dimensionedScalar ResidualAlphaForDsauter_;
-                       dimensionedScalar ResidualAlphaForAdjust_;
-                       dimensionedScalar ResidualAlphaForCorrect_;
+                       dimensionedScalar residualAlpha_;
 
-      dimensionedScalar m0_;
-      dimensionedScalar m1_;
-      dimensionedScalar m2_;
-      dimensionedScalar m3_;
-      dimensionedScalar m4_;
-      dimensionedScalar m5_;
-      dimensionedScalar w1_;
-      dimensionedScalar w2_;
-      dimensionedScalar w3_;
-      dimensionedScalar L1_;
-      dimensionedScalar L2_;
-      dimensionedScalar L3_;
 
-			//- number of classes  (is a label not scalar!!)
-//			label Nc_;
+		       dimensionedScalar m0_;
+		       dimensionedScalar m1_;
+		       dimensionedScalar m2_;
+		       dimensionedScalar m3_;
+		       dimensionedScalar m4_;
+		       dimensionedScalar m5_;
+		       dimensionedScalar m6_;
 
-//- number of moments  (is a label not scalar!!)
+
+                        //- number of moments  (is a label not scalar!!)
 			label Nm_;
 
-      //- number of nodes  (is a label not scalar!!)
+                        //- number of nodes  (is a label not scalar!!)
       			label nodes_;
 
 			//- coalescence: initial thickness
@@ -143,8 +133,6 @@ class qmom
 			//- coalescence coefficient
 			dimensionedScalar coalCoeff_;
 
-			//- Ramkrishna model paramter: equivalent to V(i+1) = S*V(i) for geometric evolution
-			dimensionedScalar S_;
 
 			//-
 			dimensionedScalar dMin_;
@@ -156,22 +144,20 @@ class qmom
 			//- tolerance
 			scalar loopTolerance_;
 
-            //           PtrList<volScalarField> f;
-                volScalarField m0;
-                volScalarField m1;
-                volScalarField m2;
-                volScalarField m3;
-                volScalarField m4;
-                volScalarField m5;
-                volScalarField w1;
-                volScalarField w2;
-                volScalarField w3;
-                volScalarField L1;
-                volScalarField L2;
-                volScalarField L3;
-
-
-
+		   
+		        volScalarField m0;
+		        volScalarField m1;
+		        volScalarField m2;
+		        volScalarField m3;
+		        volScalarField m4;
+		        volScalarField m5;
+		  	volScalarField m6;
+		        volScalarField w1;
+		        volScalarField w2;
+		        volScalarField w3;
+		        volScalarField L1;
+		        volScalarField L2;
+		        volScalarField L3;
 
 
 
@@ -185,6 +171,10 @@ class qmom
 
         //- Disallow default bitwise assignment
         void operator=(const qmom&);
+
+
+
+
 
 public:
 
@@ -215,22 +205,18 @@ public:
 
 
     // Member Functions
-/////////////////////////////////////////////////////////////////////
-    //    virtual tmp<volScalarField> dSauter() const;
-//////////////////////////////////////////////////////////////////////
+
 
         //- Correct the rheological model
         virtual void correct();
 
-		  scalar funcTest(scalar&, scalar&, scalar&) const;
 
-		  scalar kronecker(label&, label&) const;
 
 		  //------------------------------ bubbles breakup kernel -----------------------//
 		  virtual void breakupKernel
 		  (
 				PtrList<volScalarField>&,
-        PtrList<volScalarField>&,
+                                PtrList<volScalarField>&,
 				PtrList<volScalarField>&,
 				const volScalarField&
 		  ) const;
@@ -246,6 +232,7 @@ public:
 		  ) const;
 
 
+
         //------------------------------ PD algorithm -------------------//
         virtual void weightsAbscissas
         (
@@ -255,9 +242,12 @@ public:
           const volScalarField
         ) const;
 
+
 	     //------------------------------ Sauter diameter function ---------------------//
 	     tmp<volScalarField> SauterDiameter(PtrList<volScalarField>&, const volScalarField&) const ;
 
+               
+	     
 
 
 	     //---
